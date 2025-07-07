@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash, redirect, send_file, url_for, session, Response, render_template_string, jsonify
+from flask import Flask, request, render_template, jsonify, session
 from subjective import SubjectiveTest
 import nltk
 import pdfkit
@@ -11,6 +11,7 @@ app = Flask(__name__)
 app.secret_key = 'aica2'
 
 import google.generativeai as genai
+# Your hardcoded API key (keep it as is)
 genai.configure(api_key="AIzaSyBthyBU74hKTO_Ux8pUOY8oq3O4fUesRXI")
 
 from PyPDF2 import PdfFileReader, PdfReader
@@ -246,3 +247,7 @@ def interview_prep():
 if __name__ == "__main__":
     print("🚀 Starting CVGuru Interview Prep with Answer Suggestions")
     app.run(debug=True)
+
+
+# This line is important for Vercel
+application = app
