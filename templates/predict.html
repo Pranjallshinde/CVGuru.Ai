@@ -1,12 +1,390 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prediction Page</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/predict.css') }}">
-  <style>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVGuru.AI - AI Tools for Resume</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        /* ===== NAVBAR STYLING ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(15, 15, 35, 0.98);
+            padding: 10px 0;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            border-radius: 8px;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: #ffffff;
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        nav ul li a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .profile-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .join-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(15, 15, 35, 0.98);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 20px;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 15px 20px;
+                border-radius: 10px;
+                margin-bottom: 5px;
+            }
+
+            .profile-options {
+                padding: 0 20px 20px;
+            }
+        }
+        
+        /* ===== MAIN CONTENT STYLING ===== */
+        .main-content {
+            margin-top: 80px; /* Account for fixed header */
+        }
+
+        .hero-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        
+        .hero-description {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            border: 2px solid #667eea;
+            background: transparent;
+            border-radius: 50px;
+            padding: 13px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #667eea;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn-outline-custom:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 50px auto;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            padding: 15px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            color: white;
+        }
+        
+        .form-control::placeholder {
+            color: #a0a0a0;
+        }
+        
+        .form-label {
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .form-text {
+            color: #a0a0a0;
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b6b;
+            border-radius: 10px;
+        }
+        
+        .feature-cards {
+            margin-top: 60px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .learn-more {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 30px;
+            display: inline-block;
+        }
+        
+        .learn-more:hover {
+            color: #764ba2;
+        }
+
+        .form-control option {
+            background: #1a1a2e;
+            color: white;
+            padding: 10px;
+        }
+
+        .form-control:focus option:checked {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        select.form-control {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' viewBox='0 0 16 16'%3e%3cpath d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title, .hero-subtitle {
+                font-size: 2.5rem;
+            }
+            
+            .hero-description {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+            
+            .upload-section {
+                margin: 30px 20px;
+                padding: 30px 20px;
+            }
+        }
+
+        
+footer {
+  background-color: #1a1a1a;
+  color: #b5b5b5;
+  padding: 20px;
+  text-align: center;
+}
 
 footer a {
   color: #7d7aff;
@@ -25,89 +403,211 @@ footer p {
 footer p:last-child {
   margin-top: 20px; /* Adds some space before the copyright */
 }
-  </style>
-   <header>
-    <div class="container">
-        <div class="logo">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Spectram Logo"> <!-- Logo -->
-            <span>CVGuru.AI</span>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="#roadmap">Learn</a></li>
-                <li><a href="#models">Models</a></li>
-            </ul>
-        </nav>
-        <div class="profile-options">
-            <a href="#contact">
-                <button class="join-btn">Contact</button>
-            </a>
-        </div>
-    </div>
-</header>
+    </style>
 </head>
 <body>
- 
-  
-  <div id="text-container" class="centered-text">
-    <p>Upload your Document in PDF file and let the magic happen. You will get some questions based on your Document.</p>
-  </div>
-  <form id="upload-section" action="/test_generate" method="post" enctype="multipart/form-data">
-    <label for="job_title">Job you are applying for:</label>
-    <input type="text" name="job_title" id="job-title" required>
-    
-    <input class="uploadbutton" type="file" name="pdf_file" id="pdf-upload" accept=".pdf">
-    <input type="submit" class="uploadbutton" id="submit-button" value="Generate">
-  </form>
+    <!-- ===== NAVBAR ===== -->
+    <header id="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fas fa-brain" style="font-size: 2rem; margin-right: 12px; color: #667eea;"></i>
+                <span>CVGuru.AI</span>
+            </a>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav id="mobileMenu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                    <li><a href="{{ url_for('how_to_use') }}">Learn</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                
 
-  <div id="loading-message">Loading, please wait...</div>
+                </ul>
 
-  <div id="chat-section" class="container">
-    <div class="question">
-        <ul>
-          {% if cresults %}
-            {% for question in cresults %}
-              <li>{{ question }}</li>
-            {% endfor %}
-          {% else %}
-            <p>No questions generated.</p>
-          {% endif %}
-        </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <div class="hero-section"style="margin-bottom: 120px; margin-top: 120px;">
+                <h1 class="hero-title">Unlock the Power of AI using</h1>
+                <h2 class="hero-subtitle">CVGuru.AI - AI Tools for Resume</h2>
+                <p class="hero-description">
+                    Dive deep into strategies that enhance your interview skills and maximize returns in every job role you will apply.
+                </p>
+                
+                <div class="hero-buttons">
+                    <a href="#upload-section" class="btn-primary-custom">
+                        <i class="fas fa-rocket me-2"></i>Start now!
+                    </a>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div id="upload-section" class="upload-section">
+                <div class="text-center mb-4">
+                    <h3><i class="fas fa-upload me-2"></i>Upload Your Resume</h3>
+                    <p class="text-muted">Get personalized interview questions with AI-powered sample answers</p>
+                </div>
+
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('test_generate') }}" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="job_title" class="form-label">
+                            <i class="fas fa-briefcase me-2"></i>Target Job Role
+                        </label>
+                        <select class="form-control" id="job_title" name="job_title" required>
+                            <option value="">Select your target job role...</option>
+                            <option value="Data Scientist">Data Scientist</option>
+                            <option value="Backend Developer">Backend Developer</option>
+                            <option value="Frontend Developer">Frontend Developer</option>
+                            <option value="Database Administrator">Database Administrator</option>
+                            <option value="AI Engineer">AI Engineer</option>
+                            <option value="Web Developer">Web Developer</option>
+                            <option value="Software Engineer">Software Engineer</option>
+                            <option value="Data Analyst">Data Analyst</option>
+                            <option value="Full Stack Developer">Full Stack Developer</option>
+                            <option value="Mobile Developer">Mobile Developer</option>
+                            <option value="Computer Vision Engineer">Computer Vision Engineer</option>
+                            <option value="Embedded Systems Engineer">Embedded Systems Engineer</option>
+                            <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                            <option value="Software Developer">Software Developer</option>
+                            <option value="Big Data Engineer">Big Data Engineer</option>
+                            <option value="Competitive Programmer">Competitive Programmer</option>
+                            <option value="Web Scraper">Web Scraper</option>
+                            <option value="Systems Engineer">Systems Engineer</option>
+                            <option value="Automation Tester">Automation Tester</option>
+                            <option value="Systems Developer">Systems Developer</option>
+                            <option value="Data Engineer">Data Engineer</option>
+                        </select>
+                        <div class="form-text">Choose the role that best matches your target position</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="pdf_file" class="form-label">
+                            <i class="fas fa-file-pdf me-2"></i>Upload Your Resume (PDF)
+                        </label>
+                        <input type="file" class="form-control" id="pdf_file" name="pdf_file" 
+                               accept=".pdf" required>
+                        <div class="form-text">Make sure your resume is in PDF format and clearly readable</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn-primary-custom">
+                            <i class="fas fa-magic me-2"></i>Generate Interview Questions
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Feature Cards -->
+            <div id="features" class="feature-cards">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5>AI-Powered Analysis</h5>
+                            <p class="text-muted">Advanced AI analyzes your resume and generates personalized questions</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <h5>Custom Questions</h5>
+                            <p class="text-muted">Get 15 tailored interview questions based on your experience</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h5>Sample Answers</h5>
+                            <p class="text-muted">AI-generated answers using STAR method and your background</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <footer id="contact">
-    <p>For more queries, contact <a href="mailto:atharva@gmail.com">atharvapatil2222@gmail.com</a></p>
-    <p>
-        <a href="{{ url_for('static', filename='html/conditions-of-use.html') }}" style="color: #7d7aff; text-decoration: none; margin-right: 15px;">Conditions of Use</a>
-        <a href="{{ url_for('static', filename='html/privacy-notice.html') }}" style="color: #7d7aff; text-decoration: none; margin-right: 15px;">Privacy Notice</a>
-        <a href="{{ url_for('static', filename='html/terms-and-conditions.html') }}" style="color: #7d7aff; text-decoration: none;">Terms and Conditions</a>
-    </p>
-    <p>&copy; 2024</p>
-</footer>
 
-  <!-- JavaScript for Drag-and-Drop Handling (if needed) -->
-  <script>
-    function dragOverHandler(event) {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = 'copy';
-    }
+     <footer id="contact">
+            <p>For more queries, contact <a href="mailto:sakshipatil8086@gmail.com">sakshipatil8086@gmail.com </a> <br>
+            <a href="mailto:shindepranjal500@gmail.com">shindepranjal500@gmail.com </a>
+            </p>
+            
+          
+            <p>&copy; DBIT 2025</p>
+        </footer>
 
-    function dropHandler(event) {
-      event.preventDefault();
-      const files = event.dataTransfer.files;
-      handleFiles(files);
-    }
 
-    function handleFiles(files) {
-      const uploadSection = document.getElementById('upload-section');
-      const fileNames = Array.from(files).map(file => file.name).join(', ');
-      uploadSection.innerHTML = `<h2>Uploaded Files</h2><p>${fileNames}</p>`;
-    }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
 
-    function showLoadingMessage() {
-      document.getElementById('loading-message').style.display = 'block';
-    }
-  </script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuToggle.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            const icon = this.querySelector('i');
+            if (mobileMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!mobileMenuToggle.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    </script>
 </body>
 </html>

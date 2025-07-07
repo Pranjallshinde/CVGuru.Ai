@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Preparation - CVGuru{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">
+                    <i class="fas fa-user-tie me-2 text-primary"></i>Interview Preparation
+                </h2>
+                <p class="text-muted">Upload your resume and get personalized interview questions with sample answers</p>
+            </div>
+
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+            </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('generate_questions') }}" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label for="job_title" class="form-label fw-bold">
+                                <i class="fas fa-briefcase me-2 text-primary"></i>Target Job Role
+                            </label>
+                            <select class="form-control form-control-lg" id="job_title" name="job_title" required>
+                                <option value="">Select your target job role...</option>
+                                <option value="Data Scientist">Data Scientist</option>
+                                <option value="Backend Developer">Backend Developer</option>
+                                <option value="Frontend Developer">Frontend Developer</option>
+                                <option value="Database Administrator">Database Administrator</option>
+                                <option value="AI Engineer">AI Engineer</option>
+                                <option value="Web Developer">Web Developer</option>
+                                <option value="Software Engineer">Software Engineer</option>
+                                <option value="Data Analyst">Data Analyst</option>
+                                <option value="Full Stack Developer">Full Stack Developer</option>
+                                <option value="Mobile Developer">Mobile Developer</option>
+                                <option value="Computer Vision Engineer">Computer Vision Engineer</option>
+                                <option value="Embedded Systems Engineer">Embedded Systems Engineer</option>
+                                <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                                <option value="Software Developer">Software Developer</option>
+                                <option value="Big Data Engineer">Big Data Engineer</option>
+                                <option value="Competitive Programmer">Competitive Programmer</option>
+                                <option value="Web Scraper">Web Scraper</option>
+                                <option value="Systems Engineer">Systems Engineer</option>
+                                <option value="Automation Tester">Automation Tester</option>
+                                <option value="Systems Developer">Systems Developer</option>
+                                <option value="Data Engineer">Data Engineer</option>
+                            </select>
+                            <div class="form-text">Choose the role that best matches your target position</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="pdf_file" class="form-label fw-bold">
+                                <i class="fas fa-file-pdf me-2 text-danger"></i>Upload Your Resume (PDF)
+                            </label>
+                            <input type="file" class="form-control form-control-lg" id="pdf_file" name="pdf_file" 
+                                   accept=".pdf" required>
+                            <div class="form-text">Make sure your resume is in PDF format and clearly readable</div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-magic me-2"></i>Generate Interview Questions
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-question-circle fa-3x text-primary mb-3"></i>
+                            <h6 class="fw-bold">Personalized Questions</h6>
+                            <p class="small text-muted">Get 15 interview questions tailored to your resume and job role</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-lightbulb fa-3x text-warning mb-3"></i>
+                            <h6 class="fw-bold">Sample Answers</h6>
+                            <p class="small text-muted">AI-generated answers using your experience and the STAR method</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
