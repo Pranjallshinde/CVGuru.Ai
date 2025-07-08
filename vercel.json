@@ -6,13 +6,13 @@
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "50mb",
-        "runtime": "python3.12"  // <-- ADD THIS LINE
+        "runtime": "python3.12"  
       }
     }
   ],
   "functions": {
     "app.py": {
-      "runtime": "python3.12",   // <-- CHANGE THIS LINE
+      "runtime": "python3.12",   
       "maxDuration": 30
     }
   },
