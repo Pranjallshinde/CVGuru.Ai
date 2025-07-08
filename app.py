@@ -1,237 +1,301 @@
-from flask import Flask, request, render_template, jsonify, session
 import os
+import sys
 import time
 from collections import defaultdict
 
-app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+# Add current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# Import only essential libraries
 try:
+    from flask import Flask, request, render_template, jsonify, session
     import google.generativeai as genai
     import pdfplumber
 except ImportError as e:
     print(f"Import error: {e}")
-
-# Configure Gemini API
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyBthyBU74hKTO_Ux8pUOY8oq3O4fUesRXI')
-genai.configure(api_key=GEMINI_API_KEY)
-
-# Model configuration
-generation_config = {
-    "temperature": 1,
-    "top_p": 0.95,
-    "top_k": 40,
-    "max_output_tokens": 8192,
-}
-
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    generation_config=generation_config,
-)
-
-# Simple rate limiting
-request_times = defaultdict(list)
-
-def check_rate_limit(user_ip, max_requests=5, time_window=3600):
-    """Simple rate limiting"""
-    current_time = time.time()
-    user_requests = request_times[user_ip]
+    # Create a minimal Flask app for error handling
+    from flask import Flask
+    app = Flask(__name__)
     
-    # Clean old requests
-    user_requests[:] = [req_time for req_time in user_requests 
-                       if current_time - req_time < time_window]
+    @app.route('/')
+    def error_page():
+        return f"Import Error: {e}", 500
     
-    if len(user_requests) >= max_requests:
-        return False
+    # For Vercel
+    def handler(environ, start_response):
+        return app(environ, start_response)
     
-    user_requests.append(current_time)
-    return True
+    if __name__ == "__main__":
+        app.run()
+else:
+    # Main application code
+    app = Flask(__name__)
+    app.secret_key = os.environ.get('SECRET_KEY', 'fallback-secret-key-2024')
 
-def safe_gemini_send(chat_session, query, max_retries=2):
-    """Safe function to send requests to Gemini"""
-    for attempt in range(max_retries):
-        try:
-            response = chat_session.send_message(query)
-            return response
-        except Exception as e:
-            print(f"API Error (attempt {attempt + 1}): {e}")
-            if attempt < max_retries - 1:
-                time.sleep(30)
-                continue
+    # Configure Gemini API with better error handling
+    try:
+        GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY') or os.environ.get('CVGURU_GEMINI_API_KEY')
+        if not GEMINI_API_KEY:
+            raise ValueError("No Gemini API key found in environment variables")
+        
+        genai.configure(api_key=GEMINI_API_KEY)
+        
+        # Model configuration
+        generation_config = {
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 40,
+            "max_output_tokens": 8192,
+        }
+        
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            generation_config=generation_config,
+        )
+        
+    except Exception as e:
+        print(f"Gemini API configuration error: {e}")
+        model = None
+
+    # Simple rate limiting
+    request_times = defaultdict(list)
+
+    def check_rate_limit(user_ip, max_requests=5, time_window=3600):
+        """Simple rate limiting"""
+        current_time = time.time()
+        user_requests = request_times[user_ip]
+        
+        # Clean old requests
+        user_requests[:] = [req_time for req_time in user_requests 
+                           if current_time - req_time < time_window]
+        
+        if len(user_requests) >= max_requests:
+            return False
+        
+        user_requests.append(current_time)
+        return True
+
+    def safe_gemini_send(chat_session, query, max_retries=2):
+        """Safe function to send requests to Gemini"""
+        if not model:
             return None
-    return None
+            
+        for attempt in range(max_retries):
+            try:
+                response = chat_session.send_message(query)
+                return response
+            except Exception as e:
+                print(f"API Error (attempt {attempt + 1}): {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(10)  # Reduced wait time for Vercel
+                    continue
+                return None
+        return None
 
-@app.route('/')
-def index():
-    return render_template('front.html')
+    @app.route('/')
+    def index():
+        try:
+            return render_template('front.html')
+        except Exception as e:
+            return f"Template error: {e}", 500
 
-@app.route('/predict')
-def predict():
-    return render_template('predict.html')
+    @app.route('/predict')
+    def predict():
+        try:
+            return render_template('predict.html')
+        except Exception as e:
+            return f"Template error: {e}", 500
 
-@app.route('/interview_prep')
-def interview_prep():
-    return render_template('predict.html')
+    @app.route('/interview_prep')
+    def interview_prep():
+        return predict()
 
-@app.route('/generate_questions', methods=['POST'])
-def generate_questions():
-    user_ip = request.remote_addr
-    if not check_rate_limit(user_ip):
-        return render_template('predict.html', 
-                             error="Too many requests. Please wait 1 hour before trying again.")
-    
-    if 'pdf_file' not in request.files:
-        return render_template('predict.html', error="No file uploaded.")
-    
-    file = request.files['pdf_file']
-    job_title = request.form.get('job_title', '')
-    
-    if file.filename == '':
-        return render_template('predict.html', error="No file selected.")
-    
-    if not job_title.strip():
-        return render_template('predict.html', error="Please select a job title.")
-    
-    # Extract text from PDF
-    text_content = ""
-    try:
-        with pdfplumber.open(file) as pdf:
-            for page in pdf.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text_content += page_text + "\n"
-    except Exception as e:
-        return render_template('predict.html', error=f"Error reading PDF: {str(e)}")
-    
-    if not text_content.strip():
-        return render_template('predict.html', error="Could not extract text from PDF.")
-    
-    # Limit text length
-    if len(text_content) > 8000:
-        text_content = text_content[:8000] + "..."
-    
-    # Create prompt
-    prompt = f"""
-    Analyze this resume and generate exactly 15 relevant interview questions for a {job_title} position.
-    Format each question with a number (1., 2., etc.) on separate lines.
-    Focus on the candidate's experience and skills mentioned in the resume.
-    
-    Resume content:
-    {text_content}
-    """
-    
-    # Generate questions
-    try:
-        chat_session = model.start_chat(history=[])
-        response = safe_gemini_send(chat_session, prompt)
-        
-        if response is None:
+    @app.route('/generate_questions', methods=['POST'])
+    def generate_questions():
+        try:
+            user_ip = request.remote_addr or 'unknown'
+            
+            if not check_rate_limit(user_ip):
+                return render_template('predict.html', 
+                                     error="Too many requests. Please wait 1 hour before trying again.")
+            
+            if 'pdf_file' not in request.files:
+                return render_template('predict.html', error="No file uploaded.")
+            
+            file = request.files['pdf_file']
+            job_title = request.form.get('job_title', '')
+            
+            if file.filename == '':
+                return render_template('predict.html', error="No file selected.")
+            
+            if not job_title.strip():
+                return render_template('predict.html', error="Please select a job title.")
+            
+            if not model:
+                return render_template('predict.html', error="AI service is currently unavailable. Please try again later.")
+            
+            # Extract text from PDF
+            text_content = ""
+            try:
+                with pdfplumber.open(file) as pdf:
+                    for page in pdf.pages:
+                        page_text = page.extract_text()
+                        if page_text:
+                            text_content += page_text + "\n"
+            except Exception as e:
+                return render_template('predict.html', error=f"Error reading PDF: {str(e)}")
+            
+            if not text_content.strip():
+                return render_template('predict.html', error="Could not extract text from PDF.")
+            
+            # Limit text length
+            if len(text_content) > 6000:  # Reduced for Vercel limits
+                text_content = text_content[:6000] + "..."
+            
+            # Create prompt
+            prompt = f"""
+            Analyze this resume and generate exactly 15 relevant interview questions for a {job_title} position.
+            Format each question with a number (1., 2., etc.) on separate lines.
+            Focus on the candidate's experience and skills mentioned in the resume.
+            
+            Resume content:
+            {text_content}
+            """
+            
+            # Generate questions
+            try:
+                chat_session = model.start_chat(history=[])
+                response = safe_gemini_send(chat_session, prompt)
+                
+                if response is None:
+                    return render_template('predict.html', 
+                                         error="AI service error. Please try again later.")
+                
+                # Process questions
+                questions = []
+                for line in response.text.split('\n'):
+                    line = line.strip()
+                    if line and (line[0].isdigit() or line.startswith('Q')):
+                        # Clean up the question
+                        question = line.split('.', 1)[-1].strip()
+                        if len(question) > 10:
+                            questions.append(question)
+                
+                if len(questions) < 5:
+                    return render_template('predict.html', 
+                                         error="Could not generate enough questions. Please try with a different resume.")
+                
+                # Store in session
+                session['questions'] = questions[:15]  # Limit to 15
+                session['resume_text'] = text_content
+                session['job_title'] = job_title
+                
+                return render_template('questions_result.html', 
+                                     questions=questions[:15], 
+                                     job_title=job_title)
+                
+            except Exception as e:
+                return render_template('predict.html', 
+                                     error=f"Error generating questions: {str(e)}")
+                
+        except Exception as e:
+            print(f"Unexpected error in generate_questions: {e}")
             return render_template('predict.html', 
-                                 error="API error. Please try again later.")
-        
-        # Process questions
-        questions = []
-        for line in response.text.split('\n'):
-            line = line.strip()
-            if line and (line[0].isdigit() or line.startswith('Q')):
-                # Clean up the question
-                question = line.split('.', 1)[-1].strip()
-                if len(question) > 10:
-                    questions.append(question)
-        
-        if len(questions) < 5:
-            return render_template('predict.html', 
-                                 error="Could not generate enough questions. Please try with a different resume.")
-        
-        # Store in session
-        session['questions'] = questions[:15]  # Limit to 15
-        session['resume_text'] = text_content
-        session['job_title'] = job_title
-        
-        return render_template('questions_result.html', 
-                             questions=questions[:15], 
-                             job_title=job_title)
-        
-    except Exception as e:
-        return render_template('predict.html', 
-                             error=f"Error generating questions: {str(e)}")
+                                 error="An unexpected error occurred. Please try again.")
 
-@app.route('/generate_answers', methods=['POST'])
-def generate_answers():
-    user_ip = request.remote_addr
-    if not check_rate_limit(user_ip):
-        return jsonify({'error': 'Too many requests. Please wait before trying again.'})
-    
-    questions = session.get('questions', [])
-    resume_text = session.get('resume_text', '')
-    job_title = session.get('job_title', '')
-    
-    if not questions:
-        return jsonify({'error': 'No questions found. Please generate questions first.'})
-    
-    # Create answers prompt
-    prompt = f"""
-    Create sample answers for these interview questions based on the resume content.
-    Use the STAR method where appropriate. Keep answers concise (2-3 sentences each).
-    
-    Job Role: {job_title}
-    Resume: {resume_text[:3000]}
-    
-    Questions:
-    {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions)])}
-    
-    Format your response as:
-    ANSWER_1: [answer for question 1]
-    ANSWER_2: [answer for question 2]
-    And so on...
-    """
-    
-    try:
-        chat_session = model.start_chat(history=[])
-        response = safe_gemini_send(chat_session, prompt)
-        
-        if response is None:
-            return jsonify({'error': 'API error. Please try again later.'})
-        
-        # Parse answers
-        import re
-        answer_matches = re.findall(r'ANSWER_(\d+):\s*(.*?)(?=ANSWER_\d+:|$)', 
-                                  response.text, re.DOTALL)
-        
-        structured_answers = {}
-        for match in answer_matches:
-            answer_num = int(match[0])
-            answer_content = match[1].strip()
-            structured_answers[answer_num] = answer_content
-        
+    @app.route('/generate_answers', methods=['POST'])
+    def generate_answers():
+        try:
+            user_ip = request.remote_addr or 'unknown'
+            if not check_rate_limit(user_ip):
+                return jsonify({'error': 'Too many requests. Please wait before trying again.'})
+            
+            questions = session.get('questions', [])
+            resume_text = session.get('resume_text', '')
+            job_title = session.get('job_title', '')
+            
+            if not questions:
+                return jsonify({'error': 'No questions found. Please generate questions first.'})
+            
+            if not model:
+                return jsonify({'error': 'AI service is currently unavailable.'})
+            
+            # Create answers prompt
+            prompt = f"""
+            Create sample answers for these interview questions based on the resume content.
+            Use the STAR method where appropriate. Keep answers concise (2-3 sentences each).
+            
+            Job Role: {job_title}
+            Resume: {resume_text[:2000]}
+            
+            Questions:
+            {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions[:10])])}
+            
+            Format your response as:
+            ANSWER_1: [answer for question 1]
+            ANSWER_2: [answer for question 2]
+            And so on...
+            """
+            
+            try:
+                chat_session = model.start_chat(history=[])
+                response = safe_gemini_send(chat_session, prompt)
+                
+                if response is None:
+                    return jsonify({'error': 'AI service error. Please try again later.'})
+                
+                # Parse answers
+                import re
+                answer_matches = re.findall(r'ANSWER_(\d+):\s*(.*?)(?=ANSWER_\d+:|$)', 
+                                          response.text, re.DOTALL)
+                
+                structured_answers = {}
+                for match in answer_matches:
+                    answer_num = int(match[0])
+                    answer_content = match[1].strip()
+                    structured_answers[answer_num] = answer_content
+                
+                return jsonify({
+                    'success': True,
+                    'structured_answers': structured_answers,
+                    'total_questions': len(questions)
+                })
+                
+            except Exception as e:
+                return jsonify({'error': f'Error generating answers: {str(e)}'})
+                
+        except Exception as e:
+            print(f"Unexpected error in generate_answers: {e}")
+            return jsonify({'error': 'An unexpected error occurred.'})
+
+    @app.route('/how_to_use')
+    def how_to_use():
+        try:
+            return render_template('how_to_use.html')
+        except Exception as e:
+            return f"Template error: {e}", 500
+
+    # Health check for Vercel
+    @app.route('/api/health')
+    def health():
         return jsonify({
-            'success': True,
-            'structured_answers': structured_answers,
-            'total_questions': len(questions)
+            'status': 'healthy',
+            'gemini_configured': model is not None,
+            'environment': 'vercel'
         })
-        
-    except Exception as e:
-        return jsonify({'error': f'Error generating answers: {str(e)}'})
 
-@app.route('/how_to_use')
-def how_to_use():
-    return render_template('how_to_use.html')
+    # Error handlers
+    @app.errorhandler(404)
+    def not_found(error):
+        return render_template('predict.html', error="Page not found"), 404
 
-# Health check for Vercel
-@app.route('/api/health')
-def health():
-    return jsonify({'status': 'healthy'})
+    @app.errorhandler(500)
+    def internal_error(error):
+        return jsonify({'error': 'Internal server error', 'details': str(error)}), 500
 
-# Error handlers
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('predict.html', error="Page not found"), 404
+# For Vercel - this is crucial
+def handler(environ, start_response):
+    return app(environ, start_response)
 
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('predict.html', error="Internal server error"), 500
-
-# For Vercel
+# For local development
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
