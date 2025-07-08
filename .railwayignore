@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.git/
+README.md
+.gitignore
+auth_routes.py
+clerk_auth.py
+app_with_clerk.py
+subjective.py
+.vercel/
+vercel.json
