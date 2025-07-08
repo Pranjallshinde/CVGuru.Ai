@@ -3,16 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Questions - CVGuru.AI</title>
+    <title>Interview Questions - CVGuru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             min-height: 100vh;
@@ -23,38 +17,21 @@
         .header-section {
             padding: 60px 0 40px 0;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .header-title {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 15px;
-            line-height: 1.2;
         }
         
         .job-role {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 20px;
-        }
-        
-        .hero-description {
-            font-size: 1.1rem;
-            color: #a0a0a0;
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .generate-answers-section {
-            padding: 40px 0;
-            text-align: center;
         }
         
         .btn-generate-answers {
@@ -66,34 +43,12 @@
             font-weight: 600;
             color: white;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
         .btn-generate-answers:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
             color: white;
-        }
-        
-        .loading-spinner {
-            display: none;
-            margin-top: 30px;
-        }
-        
-        .spinner-border {
-            color: #667eea;
-            width: 3rem;
-            height: 3rem;
-        }
-        
-        .loading-text {
-            color: #a0a0a0;
-            margin-top: 20px;
-            font-size: 1.1rem;
-        }
-        
-        .questions-container {
-            padding: 20px 0 60px 0;
         }
         
         .question-card {
@@ -103,18 +58,15 @@
             margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
-            overflow: hidden;
         }
         
         .question-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
         
         .question-header {
             padding: 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .question-number {
@@ -128,16 +80,13 @@
             justify-content: center;
             font-weight: bold;
             margin-right: 20px;
-            font-size: 1.1rem;
         }
         
         .question-text {
-            font-size: 1.2rem;
-            font-weight: 500;
+            font-size: 1.1rem;
             color: #ffffff;
             margin: 0;
             display: inline;
-            line-height: 1.5;
         }
         
         .answer-section {
@@ -147,187 +96,88 @@
             display: none;
         }
         
-        .answer-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .answer-icon {
-            color: #ffd700;
-            margin-right: 12px;
-            font-size: 1.3rem;
-        }
-        
-        .answer-title {
-            color: #ffd700;
-            font-weight: 600;
-            margin: 0;
-            font-size: 1.1rem;
-        }
-        
         .answer-content {
             color: #e0e0e0;
-            line-height: 1.7;
-            font-size: 1.05rem;
+            line-height: 1.6;
         }
         
-        .answer-content p {
-            margin-bottom: 15px;
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
         }
         
         .back-button {
             background: transparent;
             border: 2px solid #667eea;
             border-radius: 50px;
-            padding: 15px 35px;
+            padding: 12px 30px;
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1.1rem;
             transition: all 0.3s ease;
-            display: inline-block;
-            margin-top: 40px;
         }
         
         .back-button:hover {
             background: #667eea;
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-        
-        .success-icon {
-            color: #4ade80;
-            margin-right: 15px;
-            font-size: 3rem;
-        }
-        
-        .stats-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 30px auto;
-            max-width: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .stats-item {
-            display: inline-block;
-            margin: 0 20px;
-            text-align: center;
-        }
-        
-        .stats-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-            display: block;
-        }
-        
-        .stats-label {
-            color: #a0a0a0;
-            font-size: 0.9rem;
-        }
-        
-        @media (max-width: 768px) {
-            .header-title {
-                font-size: 2.2rem;
-            }
-            
-            .question-header {
-                padding: 20px;
-            }
-            
-            .answer-section {
-                padding: 20px;
-            }
-            
-            .question-number {
-                width: 35px;
-                height: 35px;
-                margin-right: 15px;
-            }
-            
-            .question-text {
-                font-size: 1.1rem;
-            }
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
-
-     <div class="text-start">
-            <a href="{{ url_for('index1') }}" class="back-button">
-                <i class="fas fa-arrow-left me-2"></i>Back
-            </a>
-        </div>
-
     <div class="container">
-        <!-- Header Section -->
         <div class="header-section">
-               
             <h1 class="header-title">
-                <i class="fas fa-check-circle success-icon"></i>Questions Generated Successfully!
+                <i class="fas fa-check-circle text-success me-3"></i>Questions Generated!
             </h1>
             <p class="job-role">Target Role: {{ job_title }}</p>
-            <p class="hero-description">
-                AI has analyzed your resume and generated personalized interview questions. 
-                Click below to get sample answers tailored to your experience.
-            </p>
+            <p class="text-muted">{{ questions|length }} personalized interview questions ready</p>
         </div>
-
-        <!-- Generate Answers Section -->
-        <div class="generate-answers-section">
+        
+        <div class="text-center mb-5">
             <button id="generateAnswers" class="btn btn-generate-answers">
                 <i class="fas fa-magic me-2"></i>Generate Sample Answers
             </button>
             <div class="loading-spinner" id="loadingSpinner">
-                <div class="spinner-border" role="status">
+                <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="loading-text">Creating personalized answers using AI...</p>
+                <p class="mt-2">Creating personalized answers...</p>
             </div>
         </div>
-
-        <!-- Questions Container -->
-        <div class="questions-container">
-            <div class="row">
-                <div class="col-lg-10 mx-auto">
-                    {% for question in questions %}
-                    <div class="question-card">
-                        <div class="question-header">
-                            <span class="question-number">{{ loop.index }}</span>
-                            <p class="question-text">{{ question }}</p>
-                        </div>
-                        <div class="answer-section" id="answer-{{ loop.index }}">
-                            <div class="answer-header">
-                                <i class="fas fa-lightbulb answer-icon"></i>
-                                <h6 class="answer-title">Sample Answer (STAR Method):</h6>
-                            </div>
-                            <div class="answer-content"></div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Back Button -->
         
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                {% for question in questions %}
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">{{ loop.index }}</span>
+                        <p class="question-text">{{ question }}</p>
+                    </div>
+                    <div class="answer-section" id="answer-{{ loop.index }}">
+                        <div class="answer-content"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="/predict" class="back-button">
+                <i class="fas fa-arrow-left me-2"></i>Generate New Questions
+            </a>
+        </div>
     </div>
-
+    
     <script>
     document.getElementById('generateAnswers').addEventListener('click', function() {
         const button = this;
         const spinner = document.getElementById('loadingSpinner');
         
-        // Show loading state
         button.style.display = 'none';
         spinner.style.display = 'block';
         
-        // Make API call
         fetch('/generate_answers', {
             method: 'POST',
             headers: {
@@ -344,54 +194,25 @@
                 return;
             }
             
-            // ✅ FIXED: Use structured answers instead of splitting
             if (data.structured_answers) {
-                // Get all answer sections
                 const answerSections = document.querySelectorAll('.answer-section');
                 
-                // Loop through each question and match with correct answer
                 answerSections.forEach((section, index) => {
-                    const questionNumber = index + 1; // Questions are 1-indexed
+                    const questionNumber = index + 1;
                     const answerContent = section.querySelector('.answer-content');
                     
-                    // Get the correct answer for this question number
                     if (data.structured_answers[questionNumber]) {
                         answerContent.innerHTML = '<p>' + data.structured_answers[questionNumber] + '</p>';
                     } else {
-                        answerContent.innerHTML = '<p>Sample answer will be generated based on your resume experience.</p>';
-                    }
-                    
-                    // Show the answer section
-                    section.style.display = 'block';
-                });
-            } else {
-                // Fallback: try to parse the raw answers text
-                console.log('Using fallback parsing method');
-                const answers = data.answers ? data.answers.split(/(?=ANSWER_\d+:)/).filter(answer => answer.trim()) : [];
-                const answerSections = document.querySelectorAll('.answer-section');
-                
-                answerSections.forEach((section, index) => {
-                    const answerContent = section.querySelector('.answer-content');
-                    if (answers[index]) {
-                        // Remove the "ANSWER_X:" prefix and clean up
-                        let cleanAnswer = answers[index].replace(/ANSWER_\d+:\s*/, '').trim();
-                        answerContent.innerHTML = '<p>' + cleanAnswer + '</p>';
-                    } else {
                         answerContent.innerHTML = '<p>Sample answer based on your resume experience.</p>';
                     }
+                    
                     section.style.display = 'block';
                 });
             }
             
-            // Change button text and style
             button.innerHTML = '<i class="fas fa-sync me-2"></i>Regenerate Answers';
             button.style.display = 'inline-block';
-            
-            // Scroll to first question
-            document.querySelector('.question-card').scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
         })
         .catch(error => {
             console.error('Error:', error);
