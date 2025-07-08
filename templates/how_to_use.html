@@ -18,6 +18,7 @@
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #ffffff;
+            padding: 50px 0;
         }
 
         /* ===== NAVBAR STYLING ===== */
@@ -171,50 +172,20 @@
             margin-top: 80px;
         }
 
-        .hero-section {
-            padding: 80px 0 60px 0;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
         }
-
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .hero-subtitle {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.3rem;
-            font-weight: 500;
-            margin-bottom: 30px;
-        }
-
+        
         .step-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            overflow: hidden;
+            padding: 30px;
         }
-
-        .step-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .step-card .card-body {
-            padding: 35px;
-        }
-
+        
         .step-number {
             width: 50px;
             height: 50px;
@@ -227,170 +198,32 @@
             font-weight: bold;
             font-size: 1.3rem;
             margin-right: 20px;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
-
-        .step-title {
-            color: #ffffff;
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .step-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .step-list li {
-            margin-bottom: 15px;
-            color: #e0e0e0;
-            font-size: 1.05rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .step-list li i {
-            margin-right: 12px;
-            font-size: 1.1rem;
-        }
-
-        .step-visual {
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .step-visual i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .step-visual .visual-title {
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 10px;
-        }
-
-        .step-visual .visual-content {
-            color: #a0a0a0;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .tips-card {
-            background: rgba(255, 215, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-radius: 20px;
-            margin-top: 40px;
-        }
-
-        .tips-card .card-body {
-            padding: 35px;
-        }
-
-        .tips-title {
-            color: #ffd700;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-        }
-
-        .tips-title i {
-            margin-right: 12px;
-            font-size: 1.4rem;
-        }
-
-        .tips-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .tips-list li {
-            margin-bottom: 12px;
-            color: #e0e0e0;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .tips-list li i {
-            margin-right: 12px;
-            color: #4ade80;
-        }
-
-        .cta-button {
+        
+        .back-button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             border-radius: 50px;
-            padding: 18px 45px;
-            font-size: 1.2rem;
-            font-weight: 600;
+            padding: 15px 30px;
             color: white;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            margin-top: 30px;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-
-        .back-button {
-            background: transparent;
-            border: 2px solid #667eea;
-            border-radius: 50px;
-            padding: 12px 30px;
-            color: #667eea;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
-            display: inline-block;
-            margin-right: 20px;
         }
-
+        
         .back-button:hover {
-            background: #667eea;
-            color: white;
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-            
-            .step-card .card-body {
-                padding: 25px 20px;
-            }
-            
             .step-number {
                 width: 40px;
                 height: 40px;
                 font-size: 1.1rem;
                 margin-right: 15px;
-            }
-            
-            .step-title {
-                font-size: 1.2rem;
-            }
-            
-            .tips-card .card-body {
-                padding: 25px 20px;
             }
         }
     </style>
@@ -412,134 +245,72 @@
                 <ul>
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     <li><a href="{{ url_for('how_to_use') }}" class="active">Learn</a></li>
-                    <li><a href="{{ url_for('index1') }}#features">Features</a></li>
+                    <li><a href="{{ url_for('index1') }}">Get Started</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
-             
+                <div class="profile-options">
+                    <a href="#contact">
+                        <button class="join-btn">
+                            <i class="fas fa-envelope me-2"></i>Contact Us
+                        </button>
+                    </a>
+                </div>
             </nav>
         </div>
     </header>
 
     <!-- ===== MAIN CONTENT ===== -->
     <div class="main-content">
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <div class="container text-center">
-                <h1 class="hero-title">
-                    <i class="fas fa-graduation-cap me-3" style="color: #667eea;"></i>How to Use CVGuru.AI
-                </h1>
-                <p class="hero-subtitle">Master your interview preparation in 3 simple steps</p>
+        <div class="guide-container">
+            <div class="text-center mb-5">
+                <h1><i class="fas fa-graduation-cap me-3"></i>How to Use CVGuru</h1>
+                <p class="lead">Follow these simple steps to prepare for your interview</p>
             </div>
-        </div>
-
-        <!-- Steps Section -->
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-lg-10 mx-auto">
-                    <!-- Step 1 -->
-                    <div class="step-card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="step-number">1</div>
-                                <h4 class="step-title">Upload Your Resume & Select Job Role</h4>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <ul class="step-list">
-                                        <li><i class="fas fa-check text-success"></i>Upload your resume in PDF format</li>
-                                        <li><i class="fas fa-check text-success"></i>Select your target job role from dropdown</li>
-                                        <li><i class="fas fa-check text-success"></i>Ensure your resume is clear and readable</li>
-                                        <li><i class="fas fa-check text-success"></i>Include relevant skills and experience</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="step-visual">
-                                        <i class="fas fa-file-pdf text-danger"></i>
-                                        <div class="visual-title">PDF Resume</div>
-                                        <div class="visual-content">
-                                            Professional format<br>
-                                            Clear structure<br>
-                                            Updated content
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="step-card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="step-number">2</div>
-                                <h4 class="step-title">Get Personalized Questions</h4>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <ul class="step-list">
-                                        <li><i class="fas fa-robot text-primary"></i>AI analyzes your resume content</li>
-                                        <li><i class="fas fa-target text-primary"></i>Generates 15 relevant interview questions</li>
-                                        <li><i class="fas fa-user-tie text-primary"></i>Questions tailored to your experience</li>
-                                        <li><i class="fas fa-brain text-primary"></i>Role-specific question generation</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="step-visual">
-                                        <i class="fas fa-question-circle text-primary"></i>
-                                        <div class="visual-title">Sample Questions:</div>
-                                        <div class="visual-content">
-                                            • Tell me about your Python experience<br>
-                                            • Describe your recent project<br>
-                                            • Why this role interests you<br>
-                                            • How do you handle challenges?
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="step-card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="step-number">3</div>
-                                <h4 class="step-title">Get Sample Answers</h4>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <ul class="step-list">
-                                        <li><i class="fas fa-magic text-warning"></i>Click "Generate Sample Answers" button</li>
-                                        <li><i class="fas fa-star text-warning"></i>AI creates personalized answers using STAR method</li>
-                                        <li><i class="fas fa-clipboard-check text-warning"></i>Practice with the provided answers</li>
-                                        <li><i class="fas fa-lightbulb text-warning"></i>Customize answers to your experience</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="step-visual">
-                                        <i class="fas fa-star text-warning"></i>
-                                        <div class="visual-title">STAR Method:</div>
-                                        <div class="visual-content">
-                                            <strong>S</strong>ituation - Context<br>
-                                            <strong>T</strong>ask - What needed to be done<br>
-                                            <strong>A</strong>ction - What you did<br>
-                                            <strong>R</strong>esult - The outcome
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                    <!-- CTA Section -->
-                    <div class="text-center mt-5">
-                        
-                        <a href="{{ url_for('index1') }}#upload-section" class="cta-button">
-                            <i class="fas fa-rocket me-2"></i>Start Your Preparation
-                        </a>
-                    </div>
+            
+            <div class="step-card">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="step-number">1</div>
+                    <h4>Upload Your Resume</h4>
                 </div>
+                <ul>
+                    <li>Upload your resume in PDF format</li>
+                    <li>Select your target job role from the dropdown</li>
+                    <li>Ensure your resume is clear and readable</li>
+                </ul>
+            </div>
+            
+            <div class="step-card">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="step-number">2</div>
+                    <h4>Get Personalized Questions</h4>
+                </div>
+                <ul>
+                    <li>AI analyzes your resume content</li>
+                    <li>Generates 15 relevant interview questions</li>
+                    <li>Questions tailored to your experience and role</li>
+                </ul>
+            </div>
+            
+            <div class="step-card">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="step-number">3</div>
+                    <h4>Generate Sample Answers</h4>
+                </div>
+                <ul>
+                    <li>Click "Generate Sample Answers" button</li>
+                    <li>AI creates personalized answers using STAR method</li>
+                    <li>Practice with the provided answers</li>
+                    <li>Customize answers to your experience</li>
+                </ul>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                </a>
+                <a href="/predict" class="back-button ms-3">
+                    <i class="fas fa-rocket me-2"></i>Start Now
+                </a>
             </div>
         </div>
     </div>
