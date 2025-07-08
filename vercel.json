@@ -5,13 +5,14 @@
       "src": "app.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "50mb"
+        "maxLambdaSize": "50mb",
+        "runtime": "python3.12"  // <-- ADD THIS LINE
       }
     }
   ],
   "functions": {
     "app.py": {
-      "runtime": "python3.12",
+      "runtime": "python3.12",   // <-- CHANGE THIS LINE
       "maxDuration": 30
     }
   },
@@ -21,6 +22,7 @@
       "dest": "app.py"
     }
   ],
-  
-  
+  "env": {
+    "PYTHONPATH": "/var/task"
+  }
 }
