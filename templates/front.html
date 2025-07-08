@@ -3,89 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CVGuru.AI - AI Tools for Resume Growth</title>
-    <!-- Link to CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/front.css') }}">
+    <title>CVGuru - AI Interview Prep</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+        
+        .hero-section {
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero-subtitle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+    </style>
 </head>
-
-<body onload="scrollToTop()">
-    <header>
-        <div class="container">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Spectram Logo"> <!-- Logo -->
-                <span>CVGuru.AI</span>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="hero-title">
+                <i class="fas fa-brain me-3" style="color: #667eea;"></i>CVGuru
+            </h1>
+            <p class="hero-subtitle">AI-Powered Interview Preparation</p>
+            <p class="lead mb-5">Get personalized interview questions and sample answers based on your resume</p>
+            <a href="/predict" class="btn-primary-custom">
+                <i class="fas fa-rocket me-2"></i>Start Preparing Now
+            </a>
+        </div>
+        
+        <div class="row g-4 mt-5">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h5>Upload Resume</h5>
+                    <p class="text-muted">Upload your PDF resume and select target job role</p>
+                </div>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="#roadmap">Learn</a></li>
-                    <li><a href="#models">Co</a></li>
-                </ul>
-            </nav>
-            <div class="profile-options">
-                <a href="#contact">
-                    <button class="join-btn">Contact</button>
-                </a>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h5>Get Questions</h5>
+                    <p class="text-muted">AI generates 15 personalized interview questions</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h5>Sample Answers</h5>
+                    <p class="text-muted">Get AI-generated answers using STAR method</p>
+                </div>
             </div>
         </div>
-    </header>
-
-    <main>
-        <section class="hero">
-            <h1>Unlock the Power of AI using<br> <span>CVGuru.AI - AI Tools for Resume</span></h1>
-            <p>Dive deep into strategies that enhance your interview skills, resume score, and maximize returns in every job role you will apply.</p>
-            <div class="cta-buttons">
-                <a href="#roadmap">
-                    <button class="primary-btn">Start now!</button>
-                </a>
-                <a href="#models">
-                    <button class="secondary-btn">Try Resume models</button>
-                </a>
-            </div>
-            <p class="demo-text">Try our ML Models now! – <a href="#models">Learn more</a></p>
-        </section>
-
-        <!-- Image Section --> 
-        <section class="image-section">
-            <img src="{{ url_for('static', filename='images/Dashboardfront.png') }}" alt="Centered Image"> <!-- Dashboard Image -->
-        </section>
-
-        <section id="models" class="models">
-            <h1>Explore our ML Models</h1>
-            <p>These ML models can be used for generating interview questions and building your resume</p>
-            
-                
-            <div class="models-container">
-                <!-- Card 1: Generate Resume Using AI -->
-                <a href="/generate" class="model-card">
-                    <img src="{{ url_for('static', filename='images/model2.png') }}" alt="Generate Resume Image">
-                    <div class="model-name">Generate Resume Using AI</div>
-                </a>
-                
-                <!-- Card 2: Generate Interview Questions -->
-                <a href="/predict" class="model-card">
-                    <img src="{{ url_for('static', filename='images/model1.png') }}" alt="Generate Interview Questions Image">
-                    <div class="model-name">Generate Interview Questions</div>
-                </a>
-            </div>
-        </section>
-
-        <footer id="contact">
-            <p>For more queries, contact <a href="mailto:atharva@gmail.com">atharvapatil2222@gmail.com</a></p>
-            <p>
-                <a href="{{ url_for('static', filename='html/conditions-of-use.html') }}" style="color: #7d7aff; text-decoration: none; margin-right: 15px;">Conditions of Use</a>
-                <a href="{{ url_for('static', filename='html/privacy-notice.html') }}" style="color: #7d7aff; text-decoration: none; margin-right: 15px;">Privacy Notice</a>
-                <a href="{{ url_for('static', filename='html/terms-and-conditions.html') }}" style="color: #7d7aff; text-decoration: none;">Terms and Conditions</a>
-            </p>
-            <p>&copy; 2024</p>
-        </footer>
-    </main>
-
-    <!-- JavaScript to scroll to top on page load -->
-    <script>
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+    </div>
 </body>
 </html>
