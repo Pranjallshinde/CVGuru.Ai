@@ -18,6 +18,7 @@
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #ffffff;
+            padding: 50px 0;
         }
 
         /* ===== NAVBAR STYLING ===== */
@@ -219,81 +220,15 @@
         .btn-primary-custom {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 1.1rem;
+            border-radius: 10px;
+            padding: 15px;
             font-weight: 600;
-            color: white;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            margin: 10px;
+            width: 100%;
         }
         
         .btn-primary-custom:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-        
-        .btn-outline-custom {
-            border: 2px solid #667eea;
-            background: transparent;
-            border-radius: 50px;
-            padding: 13px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #667eea;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            margin: 10px;
-        }
-        
-        .btn-outline-custom:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-3px);
-        }
-        
-        .upload-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 50px auto;
-            max-width: 600px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .form-control {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: white;
-            padding: 15px;
-            font-size: 1rem;
-        }
-        
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-            color: white;
-        }
-        
-        .form-control::placeholder {
-            color: #a0a0a0;
-        }
-        
-        .form-label {
-            color: #ffffff;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .form-text {
-            color: #a0a0a0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
         
         .alert-danger {
@@ -301,6 +236,36 @@
             border: 1px solid rgba(220, 53, 69, 0.3);
             color: #ff6b6b;
             border-radius: 10px;
+        }
+        
+        .upload-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            padding: 15px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            color: white;
+        }
+        
+        .form-select option {
+            background: #1a1a2e;
+            color: white;
         }
         
         .feature-cards {
@@ -344,23 +309,6 @@
             color: #764ba2;
         }
 
-        .form-control option {
-            background: #1a1a2e;
-            color: white;
-            padding: 10px;
-        }
-
-        .form-control:focus option:checked {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        select.form-control {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' viewBox='0 0 16 16'%3e%3cpath d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero-title, .hero-subtitle {
@@ -372,37 +320,11 @@
                 padding: 0 20px;
             }
             
-            .upload-section {
+            .upload-container {
                 margin: 30px 20px;
                 padding: 30px 20px;
             }
         }
-
-        
-footer {
-  background-color: #1a1a1a;
-  color: #b5b5b5;
-  padding: 20px;
-  text-align: center;
-}
-
-footer a {
-  color: #7d7aff;
-  text-decoration: none;
-  margin-right: 15px;
-}
-
-footer a:last-child {
-  margin-right: 0; /* Removes the margin from the last link */
-}
-
-footer p {
-  margin: 10px 0;
-}
-
-footer p:last-child {
-  margin-top: 20px; /* Adds some space before the copyright */
-}
     </style>
 </head>
 <body>
@@ -424,10 +346,14 @@ footer p:last-child {
                     <li><a href="{{ url_for('how_to_use') }}">Learn</a></li>
                     <li><a href="#features">Features</a></li>
                     <li><a href="#contact">Contact</a></li>
-                
-
                 </ul>
-
+                <div class="profile-options">
+                    <a href="#contact">
+                        <button class="join-btn">
+                            <i class="fas fa-envelope me-2"></i>Contact Us
+                        </button>
+                    </a>
+                </div>
             </nav>
         </div>
     </header>
@@ -436,7 +362,7 @@ footer p:last-child {
     <div class="main-content">
         <div class="container">
             <!-- Hero Section -->
-            <div class="hero-section"style="margin-bottom: 120px; margin-top: 120px;">
+            <div class="hero-section">
                 <h1 class="hero-title">Unlock the Power of AI using</h1>
                 <h2 class="hero-subtitle">CVGuru.AI - AI Tools for Resume</h2>
                 <p class="hero-description">
@@ -451,65 +377,59 @@ footer p:last-child {
             </div>
 
             <!-- Upload Section -->
-            <div id="upload-section" class="upload-section">
+            <div id="upload-section" class="upload-container">
                 <div class="text-center mb-4">
-                    <h3><i class="fas fa-upload me-2"></i>Upload Your Resume</h3>
-                    <p class="text-muted">Get personalized interview questions with AI-powered sample answers</p>
+                    <h2><i class="fas fa-upload me-2"></i>Upload Your Resume</h2>
+                    <p class="text-muted">Get personalized interview questions</p>
                 </div>
-
+                
                 {% if error %}
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger">
                     <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
                 </div>
                 {% endif %}
-
-                <form method="POST" action="{{ url_for('test_generate') }}" enctype="multipart/form-data">
+                
+                <form method="POST" action="/generate_questions" enctype="multipart/form-data">
                     <div class="mb-4">
-                        <label for="job_title" class="form-label">
+                        <label class="form-label">
                             <i class="fas fa-briefcase me-2"></i>Target Job Role
                         </label>
-                        <select class="form-control" id="job_title" name="job_title" required>
+                        <select class="form-select" name="job_title" required>
                             <option value="">Select your target job role...</option>
                             <option value="Data Scientist">Data Scientist</option>
-                            <option value="Backend Developer">Backend Developer</option>
+                            <option value="Software Engineer">Software Engineer</option>
                             <option value="Frontend Developer">Frontend Developer</option>
-                            <option value="Database Administrator">Database Administrator</option>
+                            <option value="Backend Developer">Backend Developer</option>
+                            <option value="Full Stack Developer">Full Stack Developer</option>
+                            <option value="Data Analyst">Data Analyst</option>
+                            <option value="Machine Learning Engineer">Machine Learning Engineer</option>
                             <option value="AI Engineer">AI Engineer</option>
                             <option value="Web Developer">Web Developer</option>
-                            <option value="Software Engineer">Software Engineer</option>
-                            <option value="Data Analyst">Data Analyst</option>
-                            <option value="Full Stack Developer">Full Stack Developer</option>
                             <option value="Mobile Developer">Mobile Developer</option>
-                            <option value="Computer Vision Engineer">Computer Vision Engineer</option>
-                            <option value="Embedded Systems Engineer">Embedded Systems Engineer</option>
-                            <option value="Machine Learning Engineer">Machine Learning Engineer</option>
-                            <option value="Software Developer">Software Developer</option>
-                            <option value="Big Data Engineer">Big Data Engineer</option>
-                            <option value="Competitive Programmer">Competitive Programmer</option>
-                            <option value="Web Scraper">Web Scraper</option>
+                            <option value="Database Administrator">Database Administrator</option>
                             <option value="Systems Engineer">Systems Engineer</option>
-                            <option value="Automation Tester">Automation Tester</option>
-                            <option value="Systems Developer">Systems Developer</option>
                             <option value="Data Engineer">Data Engineer</option>
+                            <option value="Computer Vision Engineer">Computer Vision Engineer</option>
+                            <option value="Big Data Engineer">Big Data Engineer</option>
                         </select>
-                        <div class="form-text">Choose the role that best matches your target position</div>
                     </div>
-
+                    
                     <div class="mb-4">
-                        <label for="pdf_file" class="form-label">
-                            <i class="fas fa-file-pdf me-2"></i>Upload Your Resume (PDF)
+                        <label class="form-label">
+                            <i class="fas fa-file-pdf me-2"></i>Upload Resume (PDF)
                         </label>
-                        <input type="file" class="form-control" id="pdf_file" name="pdf_file" 
-                               accept=".pdf" required>
-                        <div class="form-text">Make sure your resume is in PDF format and clearly readable</div>
+                        <input type="file" class="form-control" name="pdf_file" accept=".pdf" required>
+                        <div class="form-text text-muted">Upload a clear, readable PDF resume</div>
                     </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn-primary-custom">
-                            <i class="fas fa-magic me-2"></i>Generate Interview Questions
-                        </button>
-                    </div>
+                    
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="fas fa-magic me-2"></i>Generate Interview Questions
+                    </button>
                 </form>
+                
+                <div class="text-center mt-3">
+                    <a href="/" class="text-muted">← Back to Home</a>
+                </div>
             </div>
 
             <!-- Feature Cards -->
@@ -546,16 +466,6 @@ footer p:last-child {
             </div>
         </div>
     </div>
-
-     <footer id="contact">
-            <p>For more queries, contact <a href="mailto:sakshipatil8086@gmail.com">sakshipatil8086@gmail.com </a> <br>
-            <a href="mailto:shindepranjal500@gmail.com">shindepranjal500@gmail.com </a>
-            </p>
-            
-          
-            <p>&copy; DBIT 2025</p>
-        </footer>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
