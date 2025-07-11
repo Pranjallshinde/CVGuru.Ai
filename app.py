@@ -254,11 +254,15 @@ def generate_answers():
                 answers[answer_num] = formatted_answer
         
         # CHANGE 12: Generate fallback answers if parsing fails
+        # Generate fallback answers if parsing fails
         if len(answers) < len(questions):
             for i in range(1, len(questions) + 1):
                 if i not in answers:
-                    # Create a basic STAR method template answer
-                    fallback_answer = f"In my role as mentioned in my resume, I encountered a situation where I needed to demonstrate skills relevant to {job_title}. My task was to deliver results that align with the job requirements. I took specific actions based on my experience and training. As a result, I successfully achieved the objectives and gained valuable experience that makes me suitable for this position."
+                    # Create a properly formatted STAR method template answer
+                    fallback_answer = f"""<strong>Situation:</strong> In my role as mentioned in my resume, I encountered a situation where I needed to demonstrate skills relevant to {job_title}.<br>
+<strong>Task:</strong> My task was to deliver results that align with the job requirements and expectations.<br>
+<strong>Action:</strong> I took specific actions based on my experience, training, and the skills highlighted in my resume.<br>
+<strong>Result:</strong> As a result, I successfully achieved the objectives and gained valuable experience that makes me suitable for this position."""
                     answers[i] = fallback_answer
         
         return jsonify({
