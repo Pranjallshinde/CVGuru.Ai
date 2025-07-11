@@ -233,14 +233,25 @@ def generate_answers():
             answer_num = int(match[0])
             answer_text = match[1].strip()
             
-            # CHANGE 11: Validate and enhance answers
+          # Validate and format answers while preserving STAR structure
             if len(answer_text) > 20:  # Ensure substantial answers
-                # Clean up the answer text
-                answer_text = answer_text.replace('\n', ' ').strip()
-                # Ensure answer ends with proper punctuation
-                if not answer_text.endswith('.'):
-                    answer_text += '.'
-                answers[answer_num] = answer_text
+                # Clean up excessive whitespace but preserve line breaks for STAR components
+                lines = answer_text.split('\n')
+                cleaned_lines = []
+                
+                for line in lines:
+                    line = line.strip()
+                    if line:  # Only keep non-empty lines
+                        # Convert markdown bold to HTML bold for display
+                        line = line.replace('*Situation:*', '<strong>Situation:</strong>')
+                        line = line.replace('*Task:*', '<strong>Task:</strong>')
+                        line = line.replace('*Action:*', '<strong>Action:</strong>')
+                        line = line.replace('*Result:*', '<strong>Result:</strong>')
+                        cleaned_lines.append(line)
+                
+                # Join with HTML line breaks for proper display
+                formatted_answer = '<br>'.join(cleaned_lines)
+                answers[answer_num] = formatted_answer
         
         # CHANGE 12: Generate fallback answers if parsing fails
         if len(answers) < len(questions):
