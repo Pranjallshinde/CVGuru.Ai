@@ -217,19 +217,46 @@
             margin-right: auto;
         }
         
-        .btn-primary-custom {
+         .btn-primary-custom {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
             font-weight: 600;
-            width: 100%;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
         }
         
         .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            color: white;
         }
+        
+        .btn-outline-custom {
+            border: 2px solid #667eea;
+            background: transparent;
+            border-radius: 50px;
+            padding: 13px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #667eea;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn-outline-custom:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+        }
+        
         
         .alert-danger {
             background: rgba(220, 53, 69, 0.1);
@@ -325,6 +352,32 @@
                 padding: 30px 20px;
             }
         }
+                
+footer {
+  background-color: #1a1a1a;
+  color: #b5b5b5;
+  padding: 20px;
+  text-align: center;
+}
+
+footer a {
+  color: #7d7aff;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+footer a:last-child {
+  margin-right: 0; /* Removes the margin from the last link */
+}
+
+footer p {
+  margin: 10px 0;
+}
+
+footer p:last-child {
+  margin-top: 20px; /* Adds some space before the copyright */
+}
+
     </style>
 </head>
 <body>
@@ -340,21 +393,16 @@
                 <i class="fas fa-bars"></i>
             </button>
             
-            <nav id="mobileMenu">
-                <ul>
-                    <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
-                    <li><a href="{{ url_for('how_to_use') }}">Learn</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-                <div class="profile-options">
-                    <a href="#contact">
-                        <button class="join-btn">
-                            <i class="fas fa-envelope me-2"></i>Contact Us
-                        </button>
-                    </a>
-                </div>
-            </nav>
+           
+
+           <nav id="mobileMenu">
+        <ul>
+            <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('how_to_use') }}">Learn</a></li>
+            <li><a href="#features" class="nav-link" data-section="features">Features</a></li>
+            <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+        </ul>
+    </nav>
         </div>
     </header>
 
@@ -364,12 +412,12 @@
             <!-- Hero Section -->
             <div class="hero-section">
                 <h1 class="hero-title">Unlock the Power of AI using</h1>
-                <h2 class="hero-subtitle">CVGuru.AI - AI Tools for Resume</h2>
+                <h2 class="hero-subtitle">CVGuru.AI - AI Tool for Resume</h2>
                 <p class="hero-description">
                     Dive deep into strategies that enhance your interview skills and maximize returns in every job role you will apply.
                 </p>
                 
-                <div class="hero-buttons">
+                 <div class="hero-buttons">
                     <a href="#upload-section" class="btn-primary-custom">
                         <i class="fas fa-rocket me-2"></i>Start now!
                     </a>
@@ -383,20 +431,20 @@
                     <p class="text-muted">Get personalized interview questions</p>
                 </div>
                 
-                {% if error %}
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
-                </div>
-                {% endif %}
-                
-                <form method="POST" action="/generate_questions" enctype="multipart/form-data">
+               
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+            </div>
+            {% endif %}    
+                <form method="POST" action="{{ url_for('generate_answers') }}" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label class="form-label">
                             <i class="fas fa-briefcase me-2"></i>Target Job Role
                         </label>
                         <select class="form-select" name="job_title" required>
                             <option value="">Select your target job role...</option>
-                            <option value="Data Scientist">Data Scientist</option>
+                           
                             <option value="Software Engineer">Software Engineer</option>
                             <option value="Frontend Developer">Frontend Developer</option>
                             <option value="Backend Developer">Backend Developer</option>
@@ -421,10 +469,14 @@
                         <input type="file" class="form-control" name="pdf_file" accept=".pdf" required>
                         <div class="form-text text-muted">Upload a clear, readable PDF resume</div>
                     </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn-primary-custom">
+                            <i class="fas fa-magic me-2"></i>Generate Interview Questions
+                        </button>
+                    </div>
+
                     
-                    <button type="submit" class="btn btn-primary-custom">
-                        <i class="fas fa-magic me-2"></i>Generate Interview Questions
-                    </button>
                 </form>
                 
                 <div class="text-center mt-3">
@@ -467,9 +519,18 @@
         </div>
     </div>
 
+     <footer id="contact">
+            <p>For more queries, contact <a href="mailto:sakshipatil8086@gmail.com">sakshipatil8086@gmail.com </a> <br>
+            <a href="mailto:shindepranjal500@gmail.com">shindepranjal500@gmail.com </a>
+            </p>
+            
+          
+            <p>&copy; DBIT 2025</p>
+        </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Smooth scrolling for anchor links
+         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -518,6 +579,72 @@
                 icon.classList.add('fa-bars');
             }
         });
+
+
+        // Add this JavaScript to your Flask template
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('#mobileMenu a');
+    
+    function removeActiveClass() {
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+    }
+    
+    function setActiveLink(clickedLink) {
+        removeActiveClass();
+        clickedLink.classList.add('active');
+    }
+    
+    // Handle clicks on all navigation links
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            setActiveLink(this);
+            
+            // If clicking on Home (which uses url_for), let it navigate normally
+            const href = this.getAttribute('href');
+            if (href && href.includes('index')) {
+                // This will navigate to the home page and the server will set the active class
+                return;
+            }
+        });
+    });
+    
+    // Handle hash changes (for Features and Contact)
+    window.addEventListener('hashchange', function() {
+        const hash = window.location.hash;
+        
+        if (!hash || hash === '#') {
+            // No hash means we're on home page
+            const homeLink = document.querySelector('a[href*="index"]');
+            if (homeLink) {
+                setActiveLink(homeLink);
+            }
+        } else {
+            // Find the link that matches current hash
+            const matchingLink = document.querySelector(`a[href="${hash}"]`);
+            if (matchingLink) {
+                setActiveLink(matchingLink);
+            }
+        }
+    });
+    
+    // Handle browser back button
+    window.addEventListener('popstate', function() {
+        setTimeout(() => {
+            const hash = window.location.hash;
+            if (!hash || hash === '#') {
+                const homeLink = document.querySelector('a[href*="index"]');
+                if (homeLink) {
+                    setActiveLink(homeLink);
+                }
+            }
+        }, 100);
+    });
+});
+        
+
+
     </script>
 </body>
 </html>
