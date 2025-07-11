@@ -210,6 +210,10 @@ def generate_answers():
         ANSWER_1: [STAR method answer for question 1]
         ANSWER_2: [STAR method answer for question 2]
         ...and so on for all questions.
+        Print each component (Situation, Task, Action, Result) on a new line
+        Label each component clearly in bold, like this: *Situation:*
+        Do not combine components in one paragraph — keep them separate.
+        Maintain a professional and concise tone.
         
         Make sure each answer demonstrates the candidate's qualifications based on their resume.
         """
