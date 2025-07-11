@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session
 import os
 
-app = Flask(__name__)
+app = Flask(_name_)
 app.secret_key = os.environ.get('SECRET_KEY', 'railway-secret-key-123')
 
 # Railway port configuration
@@ -53,7 +53,7 @@ def generate_questions():
         if not file.filename or not job_title:
             return render_template('predict.html', error="Please select file and job title")
         
-        # CHANGE 1: Extract text from PDF with better error handling
+        # Extract text from PDF with better error handling
         text_content = ""
         try:
             with pdfplumber.open(file) as pdf:
@@ -68,7 +68,7 @@ def generate_questions():
         if not text_content.strip():
             return render_template('predict.html', error="Could not extract text from PDF")
         
-        # CHANGE 2: Resume validation - Check if uploaded document is actually a resume
+        # Resume validation - Check if uploaded document is actually a resume
         resume_validation_prompt = f"""
         Analyze the following text and determine if this is a professional resume/CV.
         
@@ -89,15 +89,15 @@ def generate_questions():
         validation_response = model.generate_content(resume_validation_prompt)
         validation_result = validation_response.text.strip()
         
-        # CHANGE 3: Check validation result and reject non-resume documents
+        # Check validation result and reject non-resume documents
         if not validation_result.startswith("VALID_RESUME"):
-            return render_template('predict.html', 
-                                 error=f"The uploaded document doesn't appear to be a resume. {validation_result.replace('NOT_RESUME', '').strip()}")
+            return render_template('predict.html',
+                                  error=f"The uploaded document doesn't appear to be a resume. {validation_result.replace('NOT_RESUME', '').strip()}")
         
         # Limit text content for processing
         text_content = text_content[:4000]  # Increased limit for better context
         
-        # CHANGE 4: Enhanced prompt for better question generation
+        # Enhanced prompt for better question generation
         prompt = f"""
         Based on the following resume content, generate exactly 10 relevant and specific interview questions for the position of {job_title}.
         
@@ -116,7 +116,7 @@ def generate_questions():
         
         response = model.generate_content(prompt)
         
-        # CHANGE 5: Improved question parsing with better validation
+        # Improved question parsing with better validation
         questions = []
         for line in response.text.split('\n'):
             line = line.strip()
@@ -137,7 +137,7 @@ def generate_questions():
         # Ensure we have exactly 10 questions
         questions = questions[:10]
         
-        # CHANGE 6: Store additional context in session for better answer generation
+        # Store additional context in session for better answer generation
         session['questions'] = questions
         session['job_title'] = job_title
         session['resume_text'] = text_content[:2000]  # Store more context
@@ -148,7 +148,7 @@ def generate_questions():
                               job_title=job_title)
         
     except Exception as e:
-        # CHANGE 7: Better error handling with more specific error messages
+        # Better error handling with more specific error messages
         error_message = str(e)
         if "quota" in error_message.lower():
             error_message = "API quota exceeded. Please try again later."
@@ -166,7 +166,7 @@ def generate_answers():
         questions = session.get('questions', [])
         job_title = session.get('job_title', '')
         resume_text = session.get('resume_text', '')
-        full_resume = session.get('full_resume', resume_text)  # CHANGE 8: Use full resume context
+        full_resume = session.get('full_resume', resume_text)
         
         if not questions:
             return jsonify({'error': 'No questions found. Please generate questions first.'})
@@ -175,88 +175,104 @@ def generate_answers():
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-1.5-flash")
         
-        # CHANGE 9: Enhanced prompt for STAR method answers
+        # Enhanced prompt for STAR method answers with strict formatting
         prompt = f"""
         Generate professional sample answers for the following interview questions using the STAR method (Situation, Task, Action, Result).
         
         Job Position: {job_title}
         Candidate's Resume: {full_resume}
         
-        STAR Method Guidelines:
-        - Situation: Set the context and background
-        - Task: Describe what needed to be accomplished
-        - Action: Explain the specific actions taken
-        - Result: Share the outcomes and what was learned
+        CRITICAL FORMATTING REQUIREMENTS:
+        1. Each answer MUST follow this exact format:
+        *Situation:* [Describe the context and background]
+        *Task:* [Describe what needed to be accomplished]
+        *Action:* [Explain the specific actions taken]
+        *Result:* [Share the outcomes and what was learned]
         
-        Instructions:
-        1. Base answers on the actual experience and skills mentioned in the resume
-        2. Make answers specific and relevant to the {job_title} role
-        3. Keep each answer concise but comprehensive (3-4 sentences)
-        4. Use first-person perspective ("I did...", "I achieved...")
-        5. Include quantifiable results where possible
-        6. Show problem-solving skills and professional growth
-        7. Print each component (Situation, Task, Action, Result) on a new line
-        8. Label each component clearly in bold, like this: *Situation:*
-        9. Do not combine components in one paragraph — keep them separate.
-        10. Maintain a professional and concise tone.
-
-
+        2. Each component (Situation, Task, Action, Result) MUST be on a separate line
+        3. Each component MUST start with the bold label exactly as shown: *Situation:, **Task:, **Action:, **Result:*
+        4. Do NOT combine components in one paragraph
+        5. Keep each component concise (1-2 sentences)
         
+        Content Requirements:
+        - Base answers on the actual experience and skills mentioned in the resume
+        - Make answers specific and relevant to the {job_title} role
+        - Use first-person perspective ("I did...", "I achieved...")
+        - Include quantifiable results where possible
+        - Show problem-solving skills and professional growth
         
         Questions to answer:
         {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions)])}
         
         Format your response exactly as:
-        ANSWER_1: [STAR method answer for question 1]
-        ANSWER_2: [STAR method answer for question 2]
-        ...and so on for all questions.
-        Print each component (Situation, Task, Action, Result) on a new line
-        Label each component clearly in bold, like this: *Situation:*
-        Do not combine components in one paragraph — keep them separate.
-        Maintain a professional and concise tone.
+        ANSWER_1:
+        *Situation:* [situation description]
+        *Task:* [task description]
+        *Action:* [action description]
+        *Result:* [result description]
         
-        Make sure each answer demonstrates the candidate's qualifications based on their resume.
+        ANSWER_2:
+        *Situation:* [situation description]
+        *Task:* [task description]
+        *Action:* [action description]
+        *Result:* [result description]
+        
+        Continue this pattern for all questions. Remember: Each STAR component MUST be on its own line with bold labels.
         """
         
         response = model.generate_content(prompt)
         
-        # CHANGE 10: Improved answer parsing with better error handling
+        # Improved answer parsing that preserves STAR formatting
         import re
         answers = {}
         
-        # Parse answers using regex
+        # Parse answers using regex that captures multi-line content
         matches = re.findall(r'ANSWER_(\d+):\s*(.*?)(?=ANSWER_\d+:|$)', response.text, re.DOTALL)
         
         for match in matches:
             answer_num = int(match[0])
             answer_text = match[1].strip()
             
-            # CHANGE 11: Validate and enhance answers
+            # Validate and format answers while preserving STAR structure
             if len(answer_text) > 20:  # Ensure substantial answers
-                # Clean up the answer text
-                answer_text = answer_text.replace('\n', ' ').strip()
-                # Ensure answer ends with proper punctuation
-                if not answer_text.endswith('.'):
-                    answer_text += '.'
-                answers[answer_num] = answer_text
+                # Clean up excessive whitespace but preserve line breaks for STAR components
+                lines = answer_text.split('\n')
+                cleaned_lines = []
+                
+                for line in lines:
+                    line = line.strip()
+                    if line:  # Only keep non-empty lines
+                        # Convert markdown bold to HTML bold for display
+                        line = line.replace('*Situation:*', '<strong>Situation:</strong>')
+                        line = line.replace('*Task:*', '<strong>Task:</strong>')
+                        line = line.replace('*Action:*', '<strong>Action:</strong>')
+                        line = line.replace('*Result:*', '<strong>Result:</strong>')
+                        cleaned_lines.append(line)
+                
+                # Join with HTML line breaks for proper display
+                formatted_answer = '<br>'.join(cleaned_lines)
+                answers[answer_num] = formatted_answer
         
-        # CHANGE 12: Generate fallback answers if parsing fails
+        # Generate fallback answers if parsing fails
         if len(answers) < len(questions):
             for i in range(1, len(questions) + 1):
                 if i not in answers:
-                    # Create a basic STAR method template answer
-                    fallback_answer = f"In my role as mentioned in my resume, I encountered a situation where I needed to demonstrate skills relevant to {job_title}. My task was to deliver results that align with the job requirements. I took specific actions based on my experience and training. As a result, I successfully achieved the objectives and gained valuable experience that makes me suitable for this position."
+                    # Create a properly formatted STAR method template answer
+                    fallback_answer = f"""<strong>Situation:</strong> In my role as mentioned in my resume, I encountered a situation where I needed to demonstrate skills relevant to {job_title}.<br>
+<strong>Task:</strong> My task was to deliver results that align with the job requirements and expectations.<br>
+<strong>Action:</strong> I took specific actions based on my experience, training, and the skills highlighted in my resume.<br>
+<strong>Result:</strong> As a result, I successfully achieved the objectives and gained valuable experience that makes me suitable for this position."""
                     answers[i] = fallback_answer
         
         return jsonify({
             'success': True, 
             'structured_answers': answers,
             'total_questions': len(questions),
-            'method_used': 'STAR Method'  # CHANGE 13: Indicate method used
+            'method_used': 'STAR Method'
         })
         
     except Exception as e:
-        # CHANGE 14: Enhanced error handling for answer generation
+        # Enhanced error handling for answer generation
         error_message = str(e)
         if "quota" in error_message.lower():
             error_message = "API quota exceeded for answer generation. Please try again later."
@@ -269,7 +285,7 @@ def generate_answers():
 def how_to_use():
     return render_template('how_to_use.html')
 
-# CHANGE 15: Add error handlers for better user experience
+# Add error handlers for better user experience
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('predict.html', error="Page not found"), 404
@@ -278,19 +294,18 @@ def not_found_error(error):
 def internal_error(error):
     return render_template('predict.html', error="Internal server error occurred"), 500
 
-# CHANGE 16: Add file size limit to prevent large file uploads
+# Add file size limit to prevent large file uploads
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
 
 @app.errorhandler(413)
 def too_large(e):
     return render_template('predict.html', error="File too large. Please upload a file smaller than 16MB."), 413
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     print(f"Starting Flask app on port {PORT}")
-    # CHANGE 17: Add startup message with feature information
     print("Features enabled:")
     print("- Resume validation")
-    print("- STAR method answers")
+    print("- STAR method answers with proper formatting")
     print("- Enhanced error handling")
     
     app.run(
