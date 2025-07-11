@@ -195,6 +195,7 @@ def generate_answers():
         4. Use first-person perspective ("I did...", "I achieved...")
         5. Include quantifiable results where possible
         6. Show problem-solving skills and professional growth
+        7. Start each new STAR variable from new line
         
         Questions to answer:
         {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions)])}
