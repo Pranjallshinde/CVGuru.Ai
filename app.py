@@ -1,381 +1,346 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
-import os
-import pdfplumber
-import google.generativeai as genai
-from datetime import datetime, timedelta
-import time
-import logging
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Questions - CVGuru.AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            padding: 50px 0;
+        }
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'railway-secret-key-123')
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
 
-# Railway port configuration
-PORT = int(os.environ.get('PORT', 8080))
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
 
-# Configure Gemini AI
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-pro')
-else:
-    logger.warning("GEMINI_API_KEY not found in environment variables")
-    model = None
+        .header .job-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
 
-# Rate limiting storage (in production, use Redis or database)
-rate_limit_storage = {}
+        /* CHANGE 18: Added STAR method indicator styling */
+        .star-method-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-def check_rate_limit(user_ip, endpoint_type="upload", max_requests=5, window_minutes=5):
-    """Simple rate limiting implementation"""
-    current_time = datetime.now()
-    key = f"{user_ip}_{endpoint_type}"
-    
-    if key not in rate_limit_storage:
-        rate_limit_storage[key] = []
-    
-    # Clean old requests
-    rate_limit_storage[key] = [
-        req_time for req_time in rate_limit_storage[key]
-        if current_time - req_time < timedelta(minutes=window_minutes)
-    ]
-    
-    # Check if limit exceeded
-    if len(rate_limit_storage[key]) >= max_requests:
-        return False
-    
-    # Add current request
-    rate_limit_storage[key].append(current_time)
-    return True
+        .star-method-info .star-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
 
-def safe_gemini_send(chat_session, query, max_retries=3):
-    """Safely send request to Gemini with retry logic"""
-    if not model:
-        logger.error("Gemini model not configured")
-        return None
-    
-    for attempt in range(max_retries):
-        try:
-            response = chat_session.send_message(query)
-            return response
-        except Exception as e:
-            logger.error(f"Gemini API error (attempt {attempt + 1}): {str(e)}")
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)  # Exponential backoff
-            else:
-                return None
-    return None
+        .questions-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-@app.route('/')
-def index():
-    """Home page"""
-    return render_template('predict.html')
+        .question-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
 
-@app.route('/login')
-def login():
-    """Login page"""
-    try:
-        return render_template('auth/login.html')
-    except:
-        # Fallback if auth template doesn't exist
-        return render_template('predict.html')
+        .question-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
 
-@app.route('/predict')
-def index1():
-    """Predict page"""
-    return render_template('predict.html')
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
 
-@app.route('/test_generate', methods=['POST'])
-def test_generate():
-    """Generate interview questions from uploaded resume"""
-    try:
-        # Apply rate limit only for actual processing
-        user_ip = request.remote_addr
-        if not check_rate_limit(user_ip, endpoint_type="upload"):
-            return render_template('predict.html',
-                                  error="Too many uploads. Please wait 5 minutes before trying again.")
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
 
-        if 'pdf_file' not in request.files:
-            return render_template('predict.html', error="No file uploaded.")
+        .answer-text {
+            color: #a0a0a0;
+            line-height: 1.6;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            display: none;
+            margin-top: 15px;
+        }
 
-        file = request.files['pdf_file']
-        job_title = request.form.get('job_title', '')
+        .answer-text.show {
+            display: block;
+        }
 
-        if file.filename == '':
-            return render_template('predict.html', error="No file selected.")
+        /* CHANGE 19: Added STAR method breakdown styling */
+        .star-breakdown {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+            margin-top: 10px;
+            font-style: italic;
+        }
 
-        if not job_title.strip():
-            return render_template('predict.html', error="Please select a job title.")
+        .generate-answers-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
 
-        # Extract text from the PDF file
-        text_content = ""
-        if file and file.filename.lower().endswith('.pdf'):
-            try:
-                with pdfplumber.open(file) as pdf:
-                    for page in pdf.pages:
-                        page_text = page.extract_text()
-                        if page_text:
-                            text_content += page_text + "\n"
-            except Exception as e:
-                logger.error(f"PDF processing error: {str(e)}")
-                return render_template('predict.html', error=f"Error reading PDF: {str(e)}")
-        else:
-            return render_template('predict.html', error="Please upload a valid PDF file.")
+        .generate-answers-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
 
-        if not text_content.strip():
-            return render_template('predict.html', error="Could not extract text from PDF.")
+        .generate-answers-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-        # Limit text length to avoid token limits
-        if len(text_content) > 10000:
-            text_content = text_content[:10000] + "..."
+        .back-btn {
+            background: transparent;
+            border: 2px solid #667eea;
+            border-radius: 50px;
+            padding: 12px 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-right: 20px;
+        }
 
-        # Check if Gemini is available
-        if not model:
-            # Fallback to mock questions if Gemini is not available
-            mock_questions = generate_mock_questions(job_title)
-            session['questions'] = mock_questions
-            session['resume_text'] = text_content
-            session['job_title'] = job_title
-            return render_template('questions_result.html',
-                                  questions=mock_questions,
-                                  job_title=job_title)
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
 
-        # Enhanced prompt for better questions
-        basequery = (
-            "Below is text extracted from a professional resume. If this appears to be a valid resume, "
-            f"generate exactly 15 relevant interview questions for the role of '{job_title}'. "
-            "Format each question on a new line with a number (1., 2., etc.). "
-            "Focus on the candidate's experience, skills, and projects mentioned in the resume. "
-            "If this doesn't appear to be a resume, respond with 'This is not a resume.'\n\n"
-        )
-        query = basequery + text_content
+        .loading-spinner {
+            display: none;
+            margin-left: 10px;
+        }
 
-        # Send to Gemini with error handling
-        chat_session = model.start_chat(history=[])
-        response = safe_gemini_send(chat_session, query)
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .questions-section {
+                padding: 25px 20px;
+            }
+            
+            .question-item {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-question-circle me-3"></i>Interview Questions</h1>
+            <p class="job-title">{{ job_title }}</p>
+        </div>
 
-        if response is None:
-            # Fallback to mock questions
-            mock_questions = generate_mock_questions(job_title)
-            session['questions'] = mock_questions
-            session['resume_text'] = text_content
-            session['job_title'] = job_title
-            return render_template('questions_result.html',
-                                  questions=mock_questions,
-                                  job_title=job_title,
-                                  note="Using fallback questions due to API limitations.")
+        <!-- CHANGE 20: Added STAR method information section -->
+        <div class="star-method-info">
+            <div class="star-badge">
+                <i class="fas fa-star me-2"></i>STAR Method Answers
+            </div>
+            <p><strong>S</strong>ituation • <strong>T</strong>ask • <strong>A</strong>ction • <strong>R</strong>esult</p>
+            <small>Sample answers will be generated using the proven STAR interview method</small>
+        </div>
 
-        # Check if it's a valid resume
-        if response.text and response.text.strip().lower().startswith("this is not a resume"):
-            return render_template('predict.html',
-                                  error="The uploaded file doesn't look like a resume. Please upload a proper resume.")
+        <div class="questions-section">
+            <h3 class="mb-4"><i class="fas fa-list me-2"></i>Personalized Questions</h3>
+            
+            {% for question in questions %}
+            <div class="question-item">
+                <div class="d-flex align-items-start">
+                    <span class="question-number">{{ loop.index }}</span>
+                    <div class="flex-grow-1">
+                        <div class="question-text">{{ question }}</div>
+                        <div class="answer-text" id="answer-{{ loop.index }}">
+                            <strong><i class="fas fa-lightbulb me-2"></i>STAR Method Answer:</strong><br>
+                            <span id="answer-content-{{ loop.index }}">Click "Generate STAR Method Answers" to see personalized responses.</span>
+                            <!-- CHANGE 21: Added STAR method explanation -->
+                            <div class="star-breakdown">
+                                <i class="fas fa-info-circle me-1"></i>
+                                This answer will follow the STAR method: Situation → Task → Action → Result
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
 
-        # Process questions
-        questions = response.text.split("\n") if response.text else []
-        questions = [q.strip() for q in questions if q.strip() and len(q.strip()) > 10]
+            <div class="text-center mt-4">
+                <!-- CHANGE 22: Updated button text to indicate STAR method -->
+                <button class="generate-answers-btn" onclick="generateAnswers()" id="generateBtn">
+                    <i class="fas fa-star me-2"></i>
+                    <span id="btn-text">Generate STAR Method Answers</span>
+                    <div class="loading-spinner" id="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
 
-        if not questions:
-            # Fallback to mock questions
-            questions = generate_mock_questions(job_title)
+        <div class="text-center">
+            <a href="{{ url_for('predict') }}" class="back-btn">
+                <i class="fas fa-arrow-left me-2"></i>Generate More Questions
+            </a>
+            <a href="{{ url_for('index') }}" class="back-btn">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
 
-        # Store data in session for answer generation
-        session['questions'] = questions
-        session['resume_text'] = text_content
-        session['job_title'] = job_title
+    <script>
+        let answersGenerated = false;
 
-        # Return questions with option to generate answers
-        return render_template('questions_result.html',
-                              questions=questions,
-                              job_title=job_title)
+        function generateAnswers() {
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('loading-spinner');
+            
+            if (answersGenerated) {
+                // Toggle visibility
+                const answers = document.querySelectorAll('.answer-text');
+                const isVisible = answers[0].classList.contains('show');
+                
+                answers.forEach(answer => {
+                    if (isVisible) {
+                        answer.classList.remove('show');
+                    } else {
+                        answer.classList.add('show');
+                    }
+                });
+                
+                // CHANGE 23: Updated button text for STAR method
+                btnText.textContent = isVisible ? 'Show STAR Method Answers' : 'Hide STAR Method Answers';
+                return;
+            }
 
-    except Exception as e:
-        logger.error(f"Unexpected error in test_generate: {str(e)}")
-        return render_template('predict.html', error="An unexpected error occurred. Please try again.")
+            // Show loading state
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = 'Generating STAR Answers...';
 
-def generate_mock_questions(job_title):
-    """Generate mock questions as fallback"""
-    questions_db = {
-        "Data Scientist": [
-            "1. Tell me about your experience with machine learning algorithms.",
-            "2. How do you handle missing data in your datasets?",
-            "3. Describe a challenging data science project you've worked on.",
-            "4. What's your approach to feature selection and engineering?",
-            "5. How do you validate your machine learning models?",
-            "6. Explain the difference between supervised and unsupervised learning.",
-            "7. How do you communicate complex data insights to non-technical stakeholders?",
-            "8. What tools and programming languages do you prefer for data analysis?",
-            "9. Describe your experience with data visualization.",
-            "10. How do you ensure data quality and integrity?",
-            "11. What's your approach to handling large datasets?",
-            "12. Tell me about a time when your analysis led to a business decision.",
-            "13. How do you stay updated with the latest trends in data science?",
-            "14. Describe your experience with cloud platforms for data science.",
-            "15. What's your process for exploratory data analysis?"
-        ],
-        "Software Engineer": [
-            "1. Describe your software development process.",
-            "2. How do you approach debugging complex issues?",
-            "3. Tell me about a challenging technical problem you solved.",
-            "4. What's your experience with version control systems?",
-            "5. How do you ensure code quality and maintainability?",
-            "6. Describe your experience with different programming languages.",
-            "7. How do you handle technical debt in your projects?",
-            "8. What's your approach to testing and quality assurance?",
-            "9. Tell me about a time you had to learn a new technology quickly.",
-            "10. How do you collaborate with other developers on a team?",
-            "11. Describe your experience with agile development methodologies.",
-            "12. What's your approach to performance optimization?",
-            "13. How do you handle conflicting requirements from stakeholders?",
-            "14. Tell me about your experience with database design.",
-            "15. What's your process for code reviews?"
-        ]
-    }
-    
-    # Get questions for the specific job title, or use generic ones
-    return questions_db.get(job_title, [
-        "1. Tell me about yourself and your background.",
-        "2. Why are you interested in this role?",
-        "3. What are your greatest strengths?",
-        "4. Describe a challenging project you've worked on.",
-        "5. How do you handle working under pressure?",
-        "6. What motivates you in your work?",
-        "7. Where do you see yourself in 5 years?",
-        "8. How do you stay updated with industry trends?",
-        "9. Describe a time you had to work in a team.",
-        "10. What's your approach to problem-solving?",
-        "11. How do you handle feedback and criticism?",
-        "12. Tell me about a mistake you made and how you handled it.",
-        "13. What questions do you have for us?",
-        "14. Why should we hire you?",
-        "15. What are your salary expectations?"
-    ])
-
-@app.route('/generate_answers', methods=['POST'])
-def generate_answers():
-    """Generate sample answers for the interview questions"""
-    try:
-        # Check rate limit for API calls
-        user_ip = request.remote_addr
-        if not check_rate_limit(user_ip, endpoint_type="api"):
-            return jsonify({'error': 'Too many API requests. Please wait 5 minutes before trying again.'})
-
-        # Get data from session
-        questions = session.get('questions', [])
-        resume_text = session.get('resume_text', '')
-        job_title = session.get('job_title', '')
-
-        if not questions or not resume_text:
-            return jsonify({'error': 'Session expired. Please generate questions again.'})
-
-        # Check if Gemini is available
-        if not model:
-            # Generate mock answers
-            mock_answers = generate_mock_answers(questions, job_title)
-            return jsonify({
-                'success': True,
-                'structured_answers': mock_answers,
-                'total_questions': len(questions)
+            // Make API call
+            fetch('/generate_answers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             })
-
-        # Create prompt for generating answers
-        answers_prompt = f"""
-        Based on the following resume and job role, provide sample answers for these interview questions.
-        Make the answers personal and specific to the candidate's experience mentioned in the resume.
-        Use the STAR method where appropriate. Keep each answer concise (2-3 sentences).
-
-        Job Role: {job_title}
-        Resume Content: {resume_text[:5000]}
-
-        Questions and required format:
-        {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions)])}
-
-        IMPORTANT: Provide answers in this exact format:
-        ANSWER_1: [Your answer for question 1]
-        ANSWER_2: [Your answer for question 2]
-        ANSWER_3: [Your answer for question 3]
-        ... and so on for all questions.
-
-        Make sure each answer relates to the candidate's actual experience from the resume.
-        """
-
-        # Generate answers
-        chat_session = model.start_chat(history=[])
-        response = safe_gemini_send(chat_session, answers_prompt)
-
-        if response is None:
-            # Fallback to mock answers
-            mock_answers = generate_mock_answers(questions, job_title)
-            return jsonify({
-                'success': True,
-                'structured_answers': mock_answers,
-                'total_questions': len(questions),
-                'note': 'Using fallback answers due to API limitations.'
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // CHANGE 24: Enhanced answer display with method indication
+                    Object.keys(data.structured_answers).forEach(questionNum => {
+                        const answerElement = document.getElementById(`answer-content-${questionNum}`);
+                        if (answerElement) {
+                            answerElement.innerHTML = `
+                                <div style="margin-bottom: 10px;">
+                                    <span style="color: #667eea; font-weight: bold;">
+                                        <i class="fas fa-star me-1"></i>${data.method_used || 'STAR Method'}:
+                                    </span>
+                                </div>
+                                ${data.structured_answers[questionNum]}
+                            `;
+                        }
+                    });
+                    
+                    // Show all answers
+                    document.querySelectorAll('.answer-text').forEach(answer => {
+                        answer.classList.add('show');
+                    });
+                    
+                    answersGenerated = true;
+                    btnText.textContent = 'Hide STAR Method Answers';
+                    
+                    // CHANGE 25: Show success message
+                    if (data.method_used) {
+                        console.log(`Answers generated using: ${data.method_used}`);
+                    }
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to generate answers'));
+                }
             })
-
-        # Process answers
-        answer_text = response.text if response.text else "No answers generated."
-
-        # Parse answers by ANSWER_X format
-        import re
-        answer_matches = re.findall(r'ANSWER_(\d+):\s*(.*?)(?=ANSWER_\d+:|$)', answer_text, re.DOTALL)
-
-        # Create structured answers
-        structured_answers = {}
-        for match in answer_matches:
-            answer_num = int(match[0])
-            answer_content = match[1].strip()
-            structured_answers[answer_num] = answer_content
-
-        # If no structured answers found, generate mock ones
-        if not structured_answers:
-            structured_answers = generate_mock_answers(questions, job_title)
-
-        return jsonify({
-            'success': True,
-            'structured_answers': structured_answers,
-            'total_questions': len(questions)
-        })
-
-    except Exception as e:
-        logger.error(f"Error in generate_answers: {str(e)}")
-        return jsonify({'error': 'An error occurred while generating answers. Please try again.'})
-
-def generate_mock_answers(questions, job_title):
-    """Generate mock answers as fallback"""
-    mock_answers = {}
-    for i, question in enumerate(questions, 1):
-        mock_answers[i] = f"Based on my experience in {job_title.lower()}, I would approach this by first analyzing the situation, then taking specific actions based on best practices, and measuring the results to ensure success. This aligns with my professional background and demonstrates my problem-solving approach."
-    return mock_answers
-
-@app.route('/how_to_use')
-def how_to_use():
-    """How to use page"""
-    return render_template('how_to_use.html')
-
-@app.route('/interview_prep')
-def interview_prep():
-    """Interview prep page"""
-    try:
-        return render_template('interview_prep.html')
-    except:
-        # Fallback if template doesn't exist
-        return render_template('predict.html')
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('predict.html', error="Page not found"), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    logger.error(f"Internal server error: {str(error)}")
-    return render_template('predict.html', error="Internal server error occurred"), 500
-
-if __name__ == '__main__':
-    print(f"🚀 Starting CVGuru Interview Prep on port {PORT}")
-    app.run(
-        debug=False,
-        host='0.0.0.0',
-        port=PORT
-    )
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while generating answers. Please try again.');
+            })
+            .finally(() => {
+                // Hide loading state
+                btn.disabled = false;
+                spinner.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
