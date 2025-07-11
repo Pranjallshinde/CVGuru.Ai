@@ -195,7 +195,13 @@ def generate_answers():
         4. Use first-person perspective ("I did...", "I achieved...")
         5. Include quantifiable results where possible
         6. Show problem-solving skills and professional growth
-        7. Start each new STAR component from new line
+        7. Print each component (Situation, Task, Action, Result) on a new line
+        8. Label each component clearly in bold, like this: *Situation:*
+        9. Do not combine components in one paragraph — keep them separate.
+        10. Maintain a professional and concise tone.
+
+
+        
         
         Questions to answer:
         {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions)])}
