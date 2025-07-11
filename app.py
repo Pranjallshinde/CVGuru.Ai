@@ -1,346 +1,142 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Questions - CVGuru.AI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+from flask import Flask, render_template, request, jsonify, session
+import os
+
+app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'railway-secret-key-123')
+
+# Railway port configuration
+PORT = int(os.environ.get('PORT', 8080))
+
+@app.route('/')
+def index():
+    return render_template('front.html')
+
+@app.route('/test')
+def test():
+    return f"Flask is working on Railway! Port: {PORT} 🚀"
+
+@app.route('/api/health')
+def health():
+    return jsonify({
+        'status': 'healthy', 
+        'platform': 'railway',
+        'port': PORT,
+        'env_vars': {
+            'PORT': os.environ.get('PORT', 'Not set'),
+            'GEMINI_API_KEY': 'Set' if os.environ.get('GEMINI_API_KEY') else 'Not set'
         }
+    })
+
+@app.route('/predict')
+def predict():
+    return render_template('predict.html')
+
+@app.route('/generate_questions', methods=['POST'])
+def generate_questions():
+    try:
+        import google.generativeai as genai
+        import pdfplumber
         
-        body {
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-            padding: 50px 0;
-        }
+        api_key = os.environ.get('GEMINI_API_KEY')
+        if not api_key:
+            return render_template('predict.html', error="API key not configured")
+        
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        
+        if 'pdf_file' not in request.files:
+            return render_template('predict.html', error="No file uploaded")
+        
+        file = request.files['pdf_file']
+        job_title = request.form.get('job_title', '')
+        
+        if not file.filename or not job_title:
+            return render_template('predict.html', error="Please select file and job title")
+        
+        text_content = ""
+        with pdfplumber.open(file) as pdf:
+            for page in pdf.pages[:2]:
+                page_text = page.extract_text()
+                if page_text:
+                    text_content += page_text + "\n"
+        
+        if not text_content.strip():
+            return render_template('predict.html', error="Could not extract text from PDF")
+        
+        text_content = text_content[:3000]
+        
+        prompt = f"""Generate 10 interview questions for {job_title}:
+        
+        Resume: {text_content}
+        
+        Format: 1. Question"""
+        
+        response = model.generate_content(prompt)
+        
+        questions = []
+        for line in response.text.split('\n'):
+            line = line.strip()
+            if line and line[0].isdigit():
+                question = line.split('.', 1)[-1].strip()
+                if len(question) > 10:
+                    questions.append(question)
+        
+        session['questions'] = questions[:10]
+        session['job_title'] = job_title
+        session['resume_text'] = text_content[:1500]
+        
+        return render_template('questions_result.html', 
+                             questions=questions[:10], 
+                             job_title=job_title)
+        
+    except Exception as e:
+        return render_template('predict.html', error=f"Error: {str(e)}")
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+@app.route('/generate_answers', methods=['POST'])
+def generate_answers():
+    try:
+        import google.generativeai as genai
+        
+        questions = session.get('questions', [])
+        job_title = session.get('job_title', '')
+        resume_text = session.get('resume_text', '')
+        
+        if not questions:
+            return jsonify({'error': 'No questions found'})
+        
+        api_key = os.environ.get('GEMINI_API_KEY')
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        
+        prompt = f"""Brief answers for {job_title} questions:
+        
+        Resume: {resume_text}
+        Questions: {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions)])}
+        
+        Format: ANSWER_1: [answer]"""
+        
+        response = model.generate_content(prompt)
+        
+        import re
+        answers = {}
+        matches = re.findall(r'ANSWER_(\d+):\s*(.*?)(?=ANSWER_\d+:|$)', response.text, re.DOTALL)
+        
+        for match in matches:
+            answers[int(match[0])] = match[1].strip()
+        
+        return jsonify({'success': True, 'structured_answers': answers})
+        
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
+@app.route('/how_to_use')
+def how_to_use():
+    return render_template('how_to_use.html')
 
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .header .job-title {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        /* CHANGE 18: Added STAR method indicator styling */
-        .star-method-info {
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .star-method-info .star-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .questions-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .question-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .question-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-
-        .question-number {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-            font-size: 0.9rem;
-        }
-
-        .question-text {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #ffffff;
-            margin-bottom: 15px;
-        }
-
-        .answer-text {
-            color: #a0a0a0;
-            line-height: 1.6;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-            display: none;
-            margin-top: 15px;
-        }
-
-        .answer-text.show {
-            display: block;
-        }
-
-        /* CHANGE 19: Added STAR method breakdown styling */
-        .star-breakdown {
-            font-size: 0.9rem;
-            color: #b0b0b0;
-            margin-top: 10px;
-            font-style: italic;
-        }
-
-        .generate-answers-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 20px 0;
-        }
-
-        .generate-answers-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .generate-answers-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .back-btn {
-            background: transparent;
-            border: 2px solid #667eea;
-            border-radius: 50px;
-            padding: 12px 30px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-            margin-right: 20px;
-        }
-
-        .back-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .loading-spinner {
-            display: none;
-            margin-left: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .questions-section {
-                padding: 25px 20px;
-            }
-            
-            .question-item {
-                padding: 20px 15px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-question-circle me-3"></i>Interview Questions</h1>
-            <p class="job-title">{{ job_title }}</p>
-        </div>
-
-        <!-- CHANGE 20: Added STAR method information section -->
-        <div class="star-method-info">
-            <div class="star-badge">
-                <i class="fas fa-star me-2"></i>STAR Method Answers
-            </div>
-            <p><strong>S</strong>ituation • <strong>T</strong>ask • <strong>A</strong>ction • <strong>R</strong>esult</p>
-            <small>Sample answers will be generated using the proven STAR interview method</small>
-        </div>
-
-        <div class="questions-section">
-            <h3 class="mb-4"><i class="fas fa-list me-2"></i>Personalized Questions</h3>
-            
-            {% for question in questions %}
-            <div class="question-item">
-                <div class="d-flex align-items-start">
-                    <span class="question-number">{{ loop.index }}</span>
-                    <div class="flex-grow-1">
-                        <div class="question-text">{{ question }}</div>
-                        <div class="answer-text" id="answer-{{ loop.index }}">
-                            <strong><i class="fas fa-lightbulb me-2"></i>STAR Method Answer:</strong><br>
-                            <span id="answer-content-{{ loop.index }}">Click "Generate STAR Method Answers" to see personalized responses.</span>
-                            <!-- CHANGE 21: Added STAR method explanation -->
-                            <div class="star-breakdown">
-                                <i class="fas fa-info-circle me-1"></i>
-                                This answer will follow the STAR method: Situation → Task → Action → Result
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-
-            <div class="text-center mt-4">
-                <!-- CHANGE 22: Updated button text to indicate STAR method -->
-                <button class="generate-answers-btn" onclick="generateAnswers()" id="generateBtn">
-                    <i class="fas fa-star me-2"></i>
-                    <span id="btn-text">Generate STAR Method Answers</span>
-                    <div class="loading-spinner" id="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
-                </button>
-            </div>
-        </div>
-
-        <div class="text-center">
-            <a href="{{ url_for('predict') }}" class="back-btn">
-                <i class="fas fa-arrow-left me-2"></i>Generate More Questions
-            </a>
-            <a href="{{ url_for('index') }}" class="back-btn">
-                <i class="fas fa-home me-2"></i>Back to Home
-            </a>
-        </div>
-    </div>
-
-    <script>
-        let answersGenerated = false;
-
-        function generateAnswers() {
-            const btn = document.getElementById('generateBtn');
-            const btnText = document.getElementById('btn-text');
-            const spinner = document.getElementById('loading-spinner');
-            
-            if (answersGenerated) {
-                // Toggle visibility
-                const answers = document.querySelectorAll('.answer-text');
-                const isVisible = answers[0].classList.contains('show');
-                
-                answers.forEach(answer => {
-                    if (isVisible) {
-                        answer.classList.remove('show');
-                    } else {
-                        answer.classList.add('show');
-                    }
-                });
-                
-                // CHANGE 23: Updated button text for STAR method
-                btnText.textContent = isVisible ? 'Show STAR Method Answers' : 'Hide STAR Method Answers';
-                return;
-            }
-
-            // Show loading state
-            btn.disabled = true;
-            spinner.style.display = 'inline-block';
-            btnText.textContent = 'Generating STAR Answers...';
-
-            // Make API call
-            fetch('/generate_answers', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // CHANGE 24: Enhanced answer display with method indication
-                    Object.keys(data.structured_answers).forEach(questionNum => {
-                        const answerElement = document.getElementById(`answer-content-${questionNum}`);
-                        if (answerElement) {
-                            answerElement.innerHTML = `
-                                <div style="margin-bottom: 10px;">
-                                    <span style="color: #667eea; font-weight: bold;">
-                                        <i class="fas fa-star me-1"></i>${data.method_used || 'STAR Method'}:
-                                    </span>
-                                </div>
-                                ${data.structured_answers[questionNum]}
-                            `;
-                        }
-                    });
-                    
-                    // Show all answers
-                    document.querySelectorAll('.answer-text').forEach(answer => {
-                        answer.classList.add('show');
-                    });
-                    
-                    answersGenerated = true;
-                    btnText.textContent = 'Hide STAR Method Answers';
-                    
-                    // CHANGE 25: Show success message
-                    if (data.method_used) {
-                        console.log(`Answers generated using: ${data.method_used}`);
-                    }
-                } else {
-                    alert('Error: ' + (data.error || 'Failed to generate answers'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while generating answers. Please try again.');
-            })
-            .finally(() => {
-                // Hide loading state
-                btn.disabled = false;
-                spinner.style.display = 'none';
-            });
-        }
-    </script>
-</body>
-</html>
+if __name__ == '__main__':
+    print(f"Starting Flask app on port {PORT}")
+    app.run(
+        debug=False,
+        host='0.0.0.0',
+        port=PORT
+    )
