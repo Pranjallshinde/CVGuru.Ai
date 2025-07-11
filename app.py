@@ -82,7 +82,7 @@ def generate_questions():
         - Professional summary or objective
         
         Respond with only "VALID_RESUME" if this appears to be a resume, or "NOT_RESUME" if it's not a resume.
-        If it's not a resume, briefly explain what type of document it appears to be.
+        If it's not a resume, explain what type of document it appears to be.
         """
         
         # Validate if the document is a resume
