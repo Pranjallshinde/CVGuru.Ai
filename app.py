@@ -175,36 +175,49 @@ def generate_answers():
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-1.5-flash")
         
-        # CHANGE 9: Enhanced prompt for STAR method answers
+     # Enhanced prompt for STAR method answers with strict formatting
         prompt = f"""
         Generate professional sample answers for the following interview questions using the STAR method (Situation, Task, Action, Result).
         
         Job Position: {job_title}
         Candidate's Resume: {full_resume}
         
-        STAR Method Guidelines:
-        - Situation: Set the context and background
-        - Task: Describe what needed to be accomplished
-        - Action: Explain the specific actions taken
-        - Result: Share the outcomes and what was learned
+        CRITICAL FORMATTING REQUIREMENTS:
+        1. Each answer MUST follow this exact format:
+        *Situation:* [Describe the context and background]
+        *Task:* [Describe what needed to be accomplished]
+        *Action:* [Explain the specific actions taken]
+        *Result:* [Share the outcomes and what was learned]
         
-        Instructions:
-        1. Base answers on the actual experience and skills mentioned in the resume
-        2. Make answers specific and relevant to the {job_title} role
-        3. Keep each answer concise but comprehensive (3-4 sentences)
-        4. Use first-person perspective ("I did...", "I achieved...")
-        5. Include quantifiable results where possible
-        6. Show problem-solving skills and professional growth
+        2. Each component (Situation, Task, Action, Result) MUST be on a separate line
+        3. Each component MUST start with the bold label exactly as shown: *Situation:, **Task:, **Action:, **Result:*
+        4. Do NOT combine components in one paragraph
+        5. Keep each component concise (1-2 sentences)
+        
+        Content Requirements:
+        - Base answers on the actual experience and skills mentioned in the resume
+        - Make answers specific and relevant to the {job_title} role
+        - Use first-person perspective ("I did...", "I achieved...")
+        - Include quantifiable results where possible
+        - Show problem-solving skills and professional growth
         
         Questions to answer:
         {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions)])}
         
         Format your response exactly as:
-        ANSWER_1: [STAR method answer for question 1]
-        ANSWER_2: [STAR method answer for question 2]
-        ...and so on for all questions.
+        ANSWER_1:
+        *Situation:* [situation description]
+        *Task:* [task description]
+        *Action:* [action description]
+        *Result:* [result description]
         
-        Make sure each answer demonstrates the candidate's qualifications based on their resume.
+        ANSWER_2:
+        *Situation:* [situation description]
+        *Task:* [task description]
+        *Action:* [action description]
+        *Result:* [result description]
+        
+        Continue this pattern for all questions. Remember: Each STAR component MUST be on its own line with bold labels.
         """
         
         response = model.generate_content(prompt)
