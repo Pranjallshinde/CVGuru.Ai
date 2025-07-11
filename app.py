@@ -172,14 +172,14 @@ def interview_prep():
     return render_template('interview_prep.html')
 
 
-if __name__ == "__main__":
-    print("🚀 Starting CVGuru Interview Prep with Answer Suggestions")
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     print("🚀 Starting CVGuru Interview Prep with Answer Suggestions")
+#     app.run(debug=True)
     
-# if __name__ == '__main__':
-#     print(f"Starting Flask app on port {PORT}")
-#     app.run(
-#         debug=False,
-#         host='0.0.0.0',
-#         port=PORT
+if __name__ == '__main__':
+    print(f"Starting Flask app on port {PORT}")
+    app.run(
+        debug=False,
+        host='0.0.0.0',
+        port=PORT
     )
