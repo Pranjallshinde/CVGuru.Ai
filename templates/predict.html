@@ -399,8 +399,8 @@ footer p:last-child {
         <ul>
             <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
             <li><a href="{{ url_for('how_to_use') }}">Learn</a></li>
-            <li><a href="#features" class="nav-link" data-section="features">Features</a></li>
-            <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
         </div>
@@ -437,7 +437,7 @@ footer p:last-child {
                 <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
             </div>
             {% endif %}    
-                <form method="POST" action="{{ url_for('generate_answers') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ url_for('generate_questions') }}" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label class="form-label">
                             <i class="fas fa-briefcase me-2"></i>Target Job Role
@@ -502,7 +502,7 @@ footer p:last-child {
                                 <i class="fas fa-question-circle"></i>
                             </div>
                             <h5>Custom Questions</h5>
-                            <p class="text-muted">Get 15 tailored interview questions based on your experience</p>
+                            <p class="text-muted">Get 10 tailored interview questions based on your experience</p>
                         </div>
                     </div>
                     <div class="col-md-4">
