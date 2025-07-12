@@ -571,11 +571,21 @@
                     </div>
                 </div>
 
+                <!-- Usage Statistics -->
+                <div class="usage-stats" id="usageStats">
+                    <small>
+                        <i class="fas fa-chart-line me-2"></i>
+                        Session Usage: <span id="requestCount">0</span>/5 requests
+                        | Last Request: <span id="lastRequest">Never</span>
+                    </small>
+                </div>
+
             
+
                 <!-- Quota Warning -->
                 <div class="quota-warning">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Warning:</strong> To avoid errors due to too many requests, please wait at least 30 seconds before making the next request
+                    <strong>API Usage Notice:</strong> To avoid errors due to too many requests, please wait at least 30 seconds before making the next request.
                 </div>
                                            
                 {% if error %}
