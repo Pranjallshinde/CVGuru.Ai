@@ -47,6 +47,7 @@
             font-weight: 600;
         }
 
+        /* CHANGE 18: Added STAR method indicator styling */
         .star-method-info {
             background: rgba(102, 126, 234, 0.1);
             border: 1px solid rgba(102, 126, 234, 0.3);
@@ -112,9 +113,9 @@
         }
 
         .answer-text {
-            color: #e0e0e0;
-            line-height: 1.8;
-            padding: 25px;
+            color: #a0a0a0;
+            line-height: 1.6;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.02);
             border-radius: 10px;
             border-left: 4px solid #667eea;
@@ -126,24 +127,12 @@
             display: block;
         }
 
-        /* Enhanced STAR method styling */
-        .answer-text strong {
-            color: #667eea;
-            font-weight: 700;
-            font-size: 1.05rem;
-        }
-
-        .answer-text br {
-            margin-bottom: 8px;
-        }
-
+        /* CHANGE 19: Added STAR method breakdown styling */
         .star-breakdown {
             font-size: 0.9rem;
             color: #b0b0b0;
-            margin-top: 15px;
+            margin-top: 10px;
             font-style: italic;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .generate-answers-btn {
@@ -206,10 +195,6 @@
             .question-item {
                 padding: 20px 15px;
             }
-
-            .answer-text {
-                padding: 20px 15px;
-            }
         }
     </style>
 </head>
@@ -220,12 +205,13 @@
             <p class="job-title">{{ job_title }}</p>
         </div>
 
+        <!-- CHANGE 20: Added STAR method information section -->
         <div class="star-method-info">
             <div class="star-badge">
                 <i class="fas fa-star me-2"></i>STAR Method Answers
             </div>
             <p><strong>S</strong>ituation • <strong>T</strong>ask • <strong>A</strong>ction • <strong>R</strong>esult</p>
-            <small>Sample answers will be generated using the proven STAR interview method with each component on separate lines</small>
+            <small>Sample answers will be generated using the proven STAR interview method</small>
         </div>
 
         <div class="questions-section">
@@ -238,12 +224,12 @@
                     <div class="flex-grow-1">
                         <div class="question-text">{{ question }}</div>
                         <div class="answer-text" id="answer-{{ loop.index }}">
-                            <strong><i class="fas fa-lightbulb me-2"></i>STAR Method Answer:</strong><br><br>
-                            <span id="answer-content-{{ loop.index }}">Click "Generate STAR Method Answers" to see personalized responses with properly formatted components.</span>
+                            <strong><i class="fas fa-lightbulb me-2"></i>STAR Method Answer:</strong><br>
+                            <span id="answer-content-{{ loop.index }}">Click "Generate STAR Method Answers" to see personalized responses.</span>
+                            <!-- CHANGE 21: Added STAR method explanation -->
                             <div class="star-breakdown">
                                 <i class="fas fa-info-circle me-1"></i>
-                                This answer will follow the STAR method with each component clearly labeled and separated:
-                                <br><strong>Situation</strong> → <strong>Task</strong> → <strong>Action</strong> → <strong>Result</strong>
+                                This answer will follow the STAR method: Situation → Task → Action → Result
                             </div>
                         </div>
                     </div>
@@ -252,6 +238,7 @@
             {% endfor %}
 
             <div class="text-center mt-4">
+                <!-- CHANGE 22: Updated button text to indicate STAR method -->
                 <button class="generate-answers-btn" onclick="generateAnswers()" id="generateBtn">
                     <i class="fas fa-star me-2"></i>
                     <span id="btn-text">Generate STAR Method Answers</span>
@@ -262,7 +249,15 @@
             </div>
         </div>
 
-       
+        <div class="text-center">
+            <a href="{{ url_for('predict') }}" class="back-btn">
+                <i class="fas fa-arrow-left me-2"></i>Generate More Questions
+            </a>
+            <a href="{{ url_for('index') }}" class="back-btn">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
 
     <script>
         let answersGenerated = false;
@@ -285,6 +280,7 @@
                     }
                 });
                 
+                // CHANGE 23: Updated button text for STAR method
                 btnText.textContent = isVisible ? 'Show STAR Method Answers' : 'Hide STAR Method Answers';
                 return;
             }
@@ -304,19 +300,17 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Display formatted answers with proper STAR structure
+                    // CHANGE 24: Enhanced answer display with method indication
                     Object.keys(data.structured_answers).forEach(questionNum => {
-                        const answerElement = document.getElementById(answer-content-${questionNum});
+                        const answerElement = document.getElementById(`answer-content-${questionNum}`);
                         if (answerElement) {
                             answerElement.innerHTML = `
-                                <div style="margin-bottom: 15px;">
+                                <div style="margin-bottom: 10px;">
                                     <span style="color: #667eea; font-weight: bold;">
                                         <i class="fas fa-star me-1"></i>${data.method_used || 'STAR Method'}:
                                     </span>
                                 </div>
-                                <div style="line-height: 2;">
-                                    ${data.structured_answers[questionNum]}
-                                </div>
+                                ${data.structured_answers[questionNum]}
                             `;
                         }
                     });
@@ -329,8 +323,9 @@
                     answersGenerated = true;
                     btnText.textContent = 'Hide STAR Method Answers';
                     
+                    // CHANGE 25: Show success message
                     if (data.method_used) {
-                        console.log(Answers generated using: ${data.method_used});
+                        console.log(`Answers generated using: ${data.method_used}`);
                     }
                 } else {
                     alert('Error: ' + (data.error || 'Failed to generate answers'));
