@@ -12,7 +12,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-                
+                        
         body {
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             min-height: 100vh;
@@ -20,7 +20,6 @@
             color: #ffffff;
             padding: 50px 0;
         }
-
         /* ===== NAVBAR STYLING ===== */
         header {
             position: fixed;
@@ -34,13 +33,11 @@
             padding: 15px 0;
             transition: all 0.3s ease;
         }
-
         header.scrolled {
             background: rgba(15, 15, 35, 0.98);
             padding: 10px 0;
             box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
         }
-
         header .container {
             display: flex;
             justify-content: space-between;
@@ -49,7 +46,6 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-
         .logo {
             display: flex;
             align-items: center;
@@ -58,21 +54,18 @@
             color: #ffffff;
             text-decoration: none;
         }
-
         .logo img {
             width: 40px;
             height: 40px;
             margin-right: 12px;
             border-radius: 8px;
         }
-
         .logo span {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         nav ul {
             display: flex;
             list-style: none;
@@ -80,7 +73,6 @@
             margin: 0;
             padding: 0;
         }
-
         nav ul li a {
             color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
@@ -91,24 +83,20 @@
             transition: all 0.3s ease;
             position: relative;
         }
-
         nav ul li a:hover {
             color: #ffffff;
             background: rgba(102, 126, 234, 0.2);
             transform: translateY(-2px);
         }
-
         nav ul li a.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-
         .profile-options {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
         .join-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -121,12 +109,10 @@
             transition: all 0.3s ease;
             text-decoration: none;
         }
-
         .join-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
-
         /* Mobile Menu Toggle */
         .mobile-menu-toggle {
             display: none;
@@ -136,7 +122,6 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
-
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .mobile-menu-toggle {
@@ -174,25 +159,21 @@
             .profile-options {
                 padding: 0 20px 20px;
             }
-        }
-                
+        }                        
         /* ===== MAIN CONTENT STYLING ===== */
         .main-content {
             margin-top: 80px;
         }
-
         .hero-section {
             padding: 80px 0;
             text-align: center;
-        }
-                
+        }                        
         .hero-title {
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 20px;
             line-height: 1.2;
-        }
-                
+        }                        
         .hero-subtitle {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
@@ -201,8 +182,7 @@
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 30px;
-        }
-                
+        }                        
         .hero-description {
             font-size: 1.2rem;
             color: #a0a0a0;
@@ -210,8 +190,7 @@
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-        }
-                 
+        }                         
         .btn-primary-custom {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -224,21 +203,18 @@
             display: inline-block;
             transition: all 0.3s ease;
             margin: 10px;
-        }
-                
+        }                        
         .btn-primary-custom:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
             color: white;
         }
-
         .btn-primary-custom:disabled {
             background: #6c757d;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
-        }
-                
+        }                        
         .btn-outline-custom {
             border: 2px solid #667eea;
             background: transparent;
@@ -251,42 +227,33 @@
             display: inline-block;
             transition: all 0.3s ease;
             margin: 10px;
-        }
-                
+        }                        
         .btn-outline-custom:hover {
             background: #667eea;
             color: white;
             transform: translateY(-3px);
-        }
-                        
+        }                                
         .alert-danger {
             background: rgba(220, 53, 69, 0.1);
             border: 1px solid rgba(220, 53, 69, 0.3);
             color: #ff6b6b;
             border-radius: 10px;
-        }
-
-        .alert-warning {
+        }        .alert-warning {
             background: rgba(255, 193, 7, 0.1);
             border: 1px solid rgba(255, 193, 7, 0.3);
             color: #ffc107;
             border-radius: 10px;
-        }
-
-        .alert-info {
+        }        .alert-info {
             background: rgba(13, 202, 240, 0.1);
             border: 1px solid rgba(13, 202, 240, 0.3);
             color: #0dcaf0;
             border-radius: 10px;
-        }
-
-        .alert-success {
+        }        .alert-success {
             background: rgba(25, 135, 84, 0.1);
             border: 1px solid rgba(25, 135, 84, 0.3);
             color: #198754;
             border-radius: 10px;
-        }
-                
+        }                        
         .upload-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -295,32 +262,27 @@
             max-width: 600px;
             margin: 0 auto;
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-                
+        }                        
         .form-control, .form-select {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             color: white;
             padding: 15px;
-        }
-                
+        }                        
         .form-control:focus, .form-select:focus {
             background: rgba(255, 255, 255, 0.15);
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
             color: white;
-        }
-                
+        }                        
         .form-select option {
             background: #1a1a2e;
             color: white;
-        }
-                
+        }                        
         .feature-cards {
             margin-top: 60px;
-        }
-                
+        }                        
         .feature-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -330,13 +292,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
             height: 100%;
-        }
-                
+        }                        
         .feature-card:hover {
             transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.08);
-        }
-                
+        }                        
         .feature-icon {
             font-size: 3rem;
             margin-bottom: 20px;
@@ -344,42 +304,19 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-                
+        }                        
         .learn-more {
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
             margin-top: 30px;
             display: inline-block;
-        }
-                
+        }                        
         .learn-more:hover {
             color: #764ba2;
         }
-
         /* NEW STYLES FOR OPTIMIZATION */
-        .quota-warning {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .cooldown-timer {
-            background: rgba(220, 53, 69, 0.1);
-            border: 1px solid rgba(220, 53, 69, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .cooldown-timer.hidden {
-            display: none;
-        }
-
+        /* Removed .quota-warning, .cooldown-timer, .cooldown-timer.hidden, .usage-stats */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -392,7 +329,6 @@
             align-items: center;
             z-index: 9999;
         }
-
         .loading-content {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -401,7 +337,6 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid #667eea;
@@ -411,12 +346,10 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
         .progress-bar-custom {
             width: 100%;
             height: 8px;
@@ -425,14 +358,12 @@
             overflow: hidden;
             margin: 20px 0;
         }
-
         .progress-fill {
             height: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             width: 0%;
             transition: width 0.3s ease;
         }
-
         .file-info {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
@@ -440,7 +371,6 @@
             margin-top: 10px;
             display: none;
         }
-
         .optimization-tips {
             background: rgba(13, 202, 240, 0.1);
             border: 1px solid rgba(13, 202, 240, 0.3);
@@ -448,53 +378,37 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-
-        .usage-stats {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero-title, .hero-subtitle {
                 font-size: 2.5rem;
-            }
-                        
+            }                                    
             .hero-description {
                 font-size: 1rem;
                 padding: 0 20px;
-            }
-                        
+            }                                    
             .upload-container {
                 margin: 30px 20px;
                 padding: 30px 20px;
             }
-        }
-                
+        }                        
         footer {
             background-color: #1a1a1a;
             color: #b5b5b5;
             padding: 20px;
             text-align: center;
         }
-
         footer a {
             color: #7d7aff;
             text-decoration: none;
             margin-right: 15px;
         }
-
         footer a:last-child {
             margin-right: 0;
         }
-
         footer p {
             margin: 10px 0;
         }
-
         footer p:last-child {
             margin-top: 20px;
         }
@@ -513,19 +427,16 @@
             <p><small>This may take 30-60 seconds. Please don't close this window.</small></p>
         </div>
     </div>
-
     <!-- ===== NAVBAR ===== -->
     <header id="navbar">
         <div class="container">
             <a href="{{ url_for('index') }}" class="logo">
                 <i class="fas fa-brain" style="font-size: 2rem; margin-right: 12px; color: #667eea;"></i>
                 <span>CVGuru.AI</span>
-            </a>
-                        
+            </a>                                    
             <button class="mobile-menu-toggle" id="mobileMenuToggle">
                 <i class="fas fa-bars"></i>
-            </button>
-                                  
+            </button>                                              
             <nav id="mobileMenu">
                 <ul>
                     <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
@@ -536,7 +447,6 @@
             </nav>
         </div>
     </header>
-
     <!-- ===== MAIN CONTENT ===== -->
     <div class="main-content">
         <div class="container">
@@ -546,54 +456,27 @@
                 <h2 class="hero-subtitle">CVGuru.AI - AI Tool for Resume</h2>
                 <p class="hero-description">
                     Dive deep into strategies that enhance your interview skills and maximize returns in every job role you will apply.
-                </p>
-                                 
+                </p>                                                 
                 <div class="hero-buttons">
                     <a href="#upload-section" class="btn-primary-custom">
                         <i class="fas fa-rocket me-2"></i>Start now!
                     </a>
                 </div>
             </div>
-
             <!-- Upload Section -->
             <div id="upload-section" class="upload-container">
                 <div class="text-center mb-4">
                     <h2><i class="fas fa-upload me-2"></i>Upload Your Resume</h2>
                     <p class="text-muted">Get personalized interview questions</p>
                 </div>
-
-                <!-- Cooldown Timer -->
-                <div class="cooldown-timer hidden" id="cooldownTimer">
-                    <i class="fas fa-clock me-2"></i>
-                    <strong>Rate Limit Active:</strong> Please wait <span id="cooldownSeconds">30</span> seconds before making another request.
-                    <div class="progress-bar-custom mt-2">
-                        <div class="progress-fill" id="cooldownProgress"></div>
-                    </div>
-                </div>
-
-                <!-- Usage Statistics -->
-                <div class="usage-stats" id="usageStats">
-                    <small>
-                        <i class="fas fa-chart-line me-2"></i>
-                        Session Usage: <span id="requestCount">0</span>/5 requests
-                        | Last Request: <span id="lastRequest">Never</span>
-                    </small>
-                </div>
-
-               
-
-                <!-- Quota Warning -->
-                <div class="quota-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>API Usage Notice:</strong> To avoid errors due to too many requests, please wait at least 30 seconds before making the next request
-                </div>
-                                           
+                <!-- Removed Cooldown Timer -->
+                <!-- Removed Usage Statistics -->
+                <!-- Removed Quota Warning -->                                                           
                 {% if error %}
                 <div class="alert alert-danger" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
                 </div>
                 {% endif %}
-
                 <form method="POST" action="{{ url_for('generate_questions') }}" enctype="multipart/form-data" id="uploadForm">
                     <div class="mb-4">
                         <label class="form-label">
@@ -616,44 +499,39 @@
                             <option value="Computer Vision Engineer">Computer Vision Engineer</option>
                             <option value="Big Data Engineer">Big Data Engineer</option>
                         </select>
-                    </div>
-                                        
+                    </div>                                                            
                     <div class="mb-4">
                         <label class="form-label">
                             <i class="fas fa-file-pdf me-2"></i>Upload Resume (PDF)
                         </label>
                         <input type="file" class="form-control" name="pdf_file" id="pdfFile" accept=".pdf" required>
-                        <div class="form-text text-muted">Upload a clear, readable PDF resume (Max: 3MB)</div>
-                        
+                        <div class="form-text text-muted">Upload a clear, readable PDF resume (Max: 3MB)</div>                                                
                         <!-- File Info Display -->
                         <div class="file-info" id="fileInfo">
                             <small>
                                 <i class="fas fa-file-pdf me-2"></i>
-                                <span id="fileName"></span> 
-                                (<span id="fileSize"></span>)
+                                <span id="fileName"></span>                                 
+                                (<span id="fileSize"></span>)                                
                                 <span id="fileSizeWarning" class="text-warning"></span>
                             </small>
                         </div>
                     </div>
-
                     <div class="d-grid">
                         <button type="submit" class="btn-primary-custom" id="submitBtn">
                             <i class="fas fa-magic me-2"></i>Generate Interview Questions
                         </button>
                     </div>
-                </form>
-                                
+                </form>                                                
                 <div class="text-center mt-3">
                     <a href="/" class="text-muted">← Back to Home</a>
                 </div>
             </div>
-
             <!-- Feature Cards -->
             <div id="features" class="feature-cards">
                 <div class="row g-4">
                     <div class="col-md-4">
                         <div class="feature-card">
-                            <div class="feature-icon">
+                            <div class="feature-icon">                                
                                 <i class="fas fa-brain"></i>
                             </div>
                             <h5>AI-Powered Analysis</h5>
@@ -662,7 +540,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="feature-card">
-                            <div class="feature-icon">
+                            <div class="feature-icon">                                
                                 <i class="fas fa-question-circle"></i>
                             </div>
                             <h5>Custom Questions</h5>
@@ -671,7 +549,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="feature-card">
-                            <div class="feature-icon">
+                            <div class="feature-icon">                                
                                 <i class="fas fa-lightbulb"></i>
                             </div>
                             <h5>Sample Answers</h5>
@@ -682,268 +560,122 @@
             </div>
         </div>
     </div>
-
     <footer id="contact">
-        <p>For more queries, contact <a href="mailto:sakshipatil8086@gmail.com">sakshipatil8086@gmail.com</a> <br>
-        <a href="mailto:shindepranjal500@gmail.com">shindepranjal500@gmail.com</a>
-        </p>
+        <p>For more queries, contact <a href="mailto:sakshipatil8086@gmail.com">sakshipatil8086@gmail.com</a> <br>        
+        <a href="mailto:shindepranjal500@gmail.com">shindepranjal500@gmail.com</a>        
+        </p>        
         <p>&copy; DBIT 2025</p>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Rate limiting and optimization JavaScript
-        class CVGuruOptimizer {
-            constructor() {
-                this.requestCount = parseInt(localStorage.getItem('cvguru_requests') || '0');
-                this.lastRequestTime = parseInt(localStorage.getItem('cvguru_last_request') || '0');
-                this.cooldownDuration = 30000; // 30 seconds
-                this.maxRequests = 5; // Max requests per session
-                
-                this.init();
-            }
+        // All client-side rate limiting and usage tracking logic is removed.
 
-            init() {
-                this.updateUsageStats();
-                this.checkCooldown();
-                this.setupEventListeners();
-                this.setupFileValidation();
-            }
+        // Setup file validation and loading overlay directly
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('uploadForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const fileInput = document.getElementById('pdfFile');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileSizeWarning = document.getElementById('fileSizeWarning');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const progressFill = document.getElementById('progressFill');
 
-            setupEventListeners() {
-                const form = document.getElementById('uploadForm');
-                const submitBtn = document.getElementById('submitBtn');
-
-                form.addEventListener('submit', (e) => {
-                    if (!this.canMakeRequest()) {
-                        e.preventDefault();
-                        this.showCooldownMessage();
-                        return false;
-                    }
-
-                    if (!this.validateForm()) {
-                        e.preventDefault();
-                        return false;
-                    }
-
-                    this.startLoading();
-                    this.recordRequest();
-                });
-            }
-
-            setupFileValidation() {
-                const fileInput = document.getElementById('pdfFile');
-                const fileInfo = document.getElementById('fileInfo');
-                const fileName = document.getElementById('fileName');
-                const fileSize = document.getElementById('fileSize');
-                const fileSizeWarning = document.getElementById('fileSizeWarning');
-
-                fileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-                        
-                        fileName.textContent = file.name;
-                        fileSize.textContent = `${sizeInMB} MB`;
-                        
-                        if (file.size > 3 * 1024 * 1024) { // 3MB limit
-                            fileSizeWarning.textContent = ' - File too large! Please use a file under 3MB.';
-                            fileSizeWarning.className = 'text-danger';
-                        } else if (file.size > 1 * 1024 * 1024) { // 1MB warning
-                            fileSizeWarning.textContent = ' - Large file may take longer to process.';
-                            fileSizeWarning.className = 'text-warning';
-                        } else {
-                            fileSizeWarning.textContent = ' - Optimal size for fast processing!';
-                            fileSizeWarning.className = 'text-success';
-                        }
-                        
-                        fileInfo.style.display = 'block';
+            // File input change listener for displaying file info and warnings
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                                        
+                    fileName.textContent = file.name;
+                    fileSize.textContent = `${sizeInMB} MB`;
+                                        
+                    if (file.size > 3 * 1024 * 1024) { // 3MB limit
+                        fileSizeWarning.textContent = ' - File too large! Please use a file under 3MB.';
+                        fileSizeWarning.className = 'text-danger';
+                    } else if (file.size > 1 * 1024 * 1024) { // 1MB warning
+                        fileSizeWarning.textContent = ' - Large file may take longer to process.';
+                        fileSizeWarning.className = 'text-warning';
                     } else {
-                        fileInfo.style.display = 'none';
+                        fileSizeWarning.textContent = ' - Optimal size for fast processing!';
+                        fileSizeWarning.className = 'text-success';
                     }
-                });
-            }
-
-            canMakeRequest() {
-                const now = Date.now();
-                const timeSinceLastRequest = now - this.lastRequestTime;
-                
-                // Check cooldown
-                if (timeSinceLastRequest < this.cooldownDuration) {
-                    return false;
+                                        
+                    fileInfo.style.display = 'block';
+                } else {
+                    fileInfo.style.display = 'none';
                 }
+            });
 
-                // Check request limit
-                if (this.requestCount >= this.maxRequests) {
-                    // Reset count if it's been more than an hour
-                    const oneHour = 60 * 60 * 1000;
-                    if (timeSinceLastRequest > oneHour) {
-                        this.requestCount = 0;
-                        localStorage.setItem('cvguru_requests', '0');
-                    } else {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            validateForm() {
+            // Form submission handler
+            form.addEventListener('submit', (e) => {
+                // Basic form validation (already present in previous version)
                 const jobTitle = document.getElementById('jobTitle').value;
                 const pdfFile = document.getElementById('pdfFile').files[0];
 
                 if (!jobTitle) {
-                    this.showAlert('Please select a job title.', 'warning');
+                    showAlert('Please select a job title.', 'warning');
+                    e.preventDefault();
                     return false;
                 }
-
                 if (!pdfFile) {
-                    this.showAlert('Please select a PDF file.', 'warning');
+                    showAlert('Please select a PDF file.', 'warning');
+                    e.preventDefault();
                     return false;
                 }
-
                 if (pdfFile.size > 3 * 1024 * 1024) {
-                    this.showAlert('File size must be under 3MB for optimal processing.', 'danger');
+                    showAlert('File size must be under 3MB for optimal processing.', 'danger');
+                    e.preventDefault();
                     return false;
                 }
-
                 if (pdfFile.type !== 'application/pdf') {
-                    this.showAlert('Please upload a PDF file only.', 'danger');
+                    showAlert('Please upload a PDF file only.', 'danger');
+                    e.preventDefault();
                     return false;
                 }
 
-                return true;
-            }
-
-            recordRequest() {
-                this.requestCount++;
-                this.lastRequestTime = Date.now();
-                
-                localStorage.setItem('cvguru_requests', this.requestCount.toString());
-                localStorage.setItem('cvguru_last_request', this.lastRequestTime.toString());
-                
-                this.updateUsageStats();
-            }
-
-            updateUsageStats() {
-                const requestCountEl = document.getElementById('requestCount');
-                const lastRequestEl = document.getElementById('lastRequest');
-                
-                requestCountEl.textContent = this.requestCount;
-                
-                if (this.lastRequestTime > 0) {
-                    const lastRequestDate = new Date(this.lastRequestTime);
-                    lastRequestEl.textContent = lastRequestDate.toLocaleTimeString();
-                } else {
-                    lastRequestEl.textContent = 'Never';
-                }
-            }
-
-            checkCooldown() {
-                const now = Date.now();
-                const timeSinceLastRequest = now - this.lastRequestTime;
-                const remainingCooldown = this.cooldownDuration - timeSinceLastRequest;
-
-                if (remainingCooldown > 0) {
-                    this.showCooldownTimer(Math.ceil(remainingCooldown / 1000));
-                }
-            }
-
-            showCooldownTimer(seconds) {
-                const cooldownTimer = document.getElementById('cooldownTimer');
-                const cooldownSeconds = document.getElementById('cooldownSeconds');
-                const cooldownProgress = document.getElementById('cooldownProgress');
-                const submitBtn = document.getElementById('submitBtn');
-
-                cooldownTimer.classList.remove('hidden');
-                submitBtn.disabled = true;
-
-                const updateTimer = () => {
-                    if (seconds <= 0) {
-                        cooldownTimer.classList.add('hidden');
-                        submitBtn.disabled = false;
-                        return;
-                    }
-
-                    cooldownSeconds.textContent = seconds;
-                    const progressPercent = ((30 - seconds) / 30) * 100;
-                    cooldownProgress.style.width = `${progressPercent}%`;
-
-                    seconds--;
-                    setTimeout(updateTimer, 1000);
-                };
-
-                updateTimer();
-            }
-
-            showCooldownMessage() {
-                const remainingTime = Math.ceil((this.cooldownDuration - (Date.now() - this.lastRequestTime)) / 1000);
-                this.showAlert(`Please wait ${remainingTime} seconds before making another request to avoid quota limits.`, 'warning');
-                this.showCooldownTimer(remainingTime);
-            }
-
-            startLoading() {
-                const loadingOverlay = document.getElementById('loadingOverlay');
-                const loadingMessage = document.getElementById('loadingMessage');
-                const progressFill = document.getElementById('progressFill');
-
+                // Start loading animation
                 loadingOverlay.style.display = 'flex';
-
-                // Simulate progress
                 let progress = 0;
                 const messages = [
                     'Uploading and validating your resume...',
-                    'Analyzing resume content...',
+                    'Analyzing content and generating questions...',
                     'Generating personalized questions...',
                     'Finalizing your interview questions...'
                 ];
-
                 const updateProgress = () => {
                     progress += Math.random() * 15 + 5;
                     if (progress > 95) progress = 95;
-
                     progressFill.style.width = `${progress}%`;
-
                     const messageIndex = Math.floor((progress / 100) * messages.length);
                     if (messageIndex < messages.length) {
                         loadingMessage.textContent = messages[messageIndex];
                     }
-
                     if (progress < 95) {
                         setTimeout(updateProgress, 1000 + Math.random() * 2000);
                     }
                 };
-
                 updateProgress();
-            }
+            });
 
-            showAlert(message, type) {
-                // Remove existing alerts
+            // Function to show dynamic alerts
+            function showAlert(message, type) {
                 const existingAlerts = document.querySelectorAll('.dynamic-alert');
                 existingAlerts.forEach(alert => alert.remove());
-
-                // Create new alert
                 const alertDiv = document.createElement('div');
                 alertDiv.className = `alert alert-${type} dynamic-alert`;
                 alertDiv.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>${message}`;
-
-                // Insert before the form
                 const form = document.getElementById('uploadForm');
                 form.parentNode.insertBefore(alertDiv, form);
-
-                // Auto-remove after 5 seconds
                 setTimeout(() => {
                     alertDiv.remove();
                 }, 5000);
             }
-        }
-
-        // Initialize optimizer when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new CVGuruOptimizer();
         });
 
-        // Existing navigation JavaScript
+        // Existing navigation JavaScript (kept as is)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -956,11 +688,10 @@
                 }
             });
         });
-
-        // Mobile menu toggle
+        
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const mobileMenu = document.getElementById('mobileMenu');
-        
+                
         mobileMenuToggle.addEventListener('click', function() {
             mobileMenu.classList.toggle('active');
             const icon = this.querySelector('i');
@@ -972,8 +703,7 @@
                 icon.classList.add('fa-bars');
             }
         });
-
-        // Navbar scroll effect
+        
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
@@ -982,8 +712,7 @@
                 navbar.classList.remove('scrolled');
             }
         });
-
-        // Close mobile menu when clicking outside
+        
         document.addEventListener('click', function(event) {
             if (!mobileMenuToggle.contains(event.target) && !mobileMenu.contains(event.target)) {
                 mobileMenu.classList.remove('active');
@@ -992,36 +721,33 @@
                 icon.classList.add('fa-bars');
             }
         });
-
-        // Navigation active state management
+        
         document.addEventListener('DOMContentLoaded', function() {
             const navLinks = document.querySelectorAll('#mobileMenu a');
-            
+                        
             function removeActiveClass() {
                 navLinks.forEach(link => {
                     link.classList.remove('active');
                 });
             }
-            
+                        
             function setActiveLink(clickedLink) {
                 removeActiveClass();
                 clickedLink.classList.add('active');
             }
-            
+                        
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    setActiveLink(this);
-                    
+                    setActiveLink(this);                                        
                     const href = this.getAttribute('href');
                     if (href && href.includes('index')) {
                         return;
                     }
                 });
             });
-            
+                        
             window.addEventListener('hashchange', function() {
-                const hash = window.location.hash;
-                
+                const hash = window.location.hash;                                
                 if (!hash || hash === '#') {
                     const homeLink = document.querySelector('a[href*="index"]');
                     if (homeLink) {
@@ -1034,7 +760,7 @@
                     }
                 }
             });
-            
+                        
             window.addEventListener('popstate', function() {
                 setTimeout(() => {
                     const hash = window.location.hash;
