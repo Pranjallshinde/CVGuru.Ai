@@ -156,7 +156,7 @@ def generate_questions():
         Requirements for questions:
         - Specific to the candidate's experience in the resume
         - Mix of technical and behavioral questions for {job_title}
-        - Challenging but fair
+        - Easy to Medium level but fair
         - Based on actual projects/technologies mentioned
         """
                 
