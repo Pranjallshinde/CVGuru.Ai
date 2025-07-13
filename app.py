@@ -104,7 +104,7 @@ def generate_questions():
             return render_template('predict.html', error="API key not configured. Please set GEMINI_API_KEY environment variable.")
                 
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
                 
         if 'pdf_file' not in request.files:
             return render_template('predict.html', error="No file uploaded")
