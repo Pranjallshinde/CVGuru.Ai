@@ -230,7 +230,7 @@ def generate_answers():
             return jsonify({'error': 'API key not configured on server.'})
 
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
                 
         # Optimized prompt for better token efficiency
         prompt = f"""
@@ -239,7 +239,7 @@ def generate_answers():
         Job: {job_title}
         Resume Context: {resume_text[:1000]}  # Further reduced
                 
-        Questions: {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions[:5])])}  # Limit to 5 questions
+        Questions: {chr(10).join([f"{i+1}. {q}" for i, q in enumerate(questions[:10])])}  # Limit to 5 questions
                 
         Format each answer as:
         ANSWER_X:
