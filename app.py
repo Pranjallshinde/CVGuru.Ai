@@ -8,7 +8,7 @@ import pdfplumber
 import google.api_core.exceptions # Import specific exceptions
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'railway-secret-key-123')
+app.secret_key = os.environ.get('SECRET_KEY', 'render-secret-key-123')
 
 # Railway port configuration
 PORT = int(os.environ.get('PORT', 10000))
@@ -83,13 +83,14 @@ def test():
 def health():
     return jsonify({
         'status': 'healthy', 
-        'platform': 'railway',
+        'platform': 'render',
         'port': PORT,
         'env_vars': {
             'PORT': os.environ.get('PORT', 'Not set'),
             'GEMINI_API_KEY': 'Set' if os.environ.get('GEMINI_API_KEY') else 'Not set'
         }
     })
+
 
 @app.route('/predict')
 def predict():
@@ -458,7 +459,7 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB limit
 def too_large(e):
     return render_template('predict.html', error="File too large. Please upload a file smaller than 5MB."), 413
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     print(f"Starting Flask app on port {PORT}")
     print("Optimizations enabled:")
     print("- Server-side rate limiting (10 requests per 10 minutes)")
@@ -470,6 +471,13 @@ if __name__ == '__main__':
     app.run(
         debug=False,
         host='0.0.0.0',
+        port=PORT
+    )
+        
+    app.run(
+        debug=False,
+        host='0.0.0.0',
         port=PORT
     )
+
 
