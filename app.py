@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'railway-secret-key-123')
 
 # Railway port configuration
-PORT = int(os.environ.get('PORT', 8080))
+PORT = int(os.environ.get('PORT', 10000))
 
 # Server-side rate limiting
 RATE_LIMIT_STORAGE = {}
@@ -472,3 +472,4 @@ if __name__ == '__main__':
         host='0.0.0.0',
         port=PORT
     )
+
