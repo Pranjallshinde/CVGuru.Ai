@@ -467,14 +467,11 @@ if _name_ == '_main_':
     print("- Single API call per question generation request")
     print("- Reduced token usage")
     print("- Enhanced error handling")
-        
-    app.run(
-        debug=False,
-        host='0.0.0.0',
-        port=PORT
-    )
+    app.run(host='0.0.0.0', port=PORT, debug=False)
+    
         
    
+
 
 
 
