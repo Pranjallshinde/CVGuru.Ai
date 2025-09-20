@@ -459,7 +459,7 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB limit
 def too_large(e):
     return render_template('predict.html', error="File too large. Please upload a file smaller than 5MB."), 413
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     print(f"Starting Flask app on port {PORT}")
     print("Optimizations enabled:")
     print("- Server-side rate limiting (10 requests per 10 minutes)")
@@ -471,6 +471,7 @@ if _name_ == '_main_':
     
         
    
+
 
 
 
